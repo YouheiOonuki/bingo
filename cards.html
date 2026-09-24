@@ -40,6 +40,12 @@
 
   <main class="app-main">
 
+    <!-- 抽選とカード印刷の切り替え（印刷では出さない） -->
+    <nav class="mode-switch" aria-label="ビンゴのページ">
+      <a href="./">抽選する</a>
+      <a href="./cards.html" aria-current="page">カードを作って印刷する</a>
+    </nav>
+
     <p id="shared-banner" class="card banner" hidden>
       <span id="shared-text"></span>
       <button type="button" id="btn-save-shared" class="btn">この設定を保存する</button>
@@ -80,7 +86,7 @@
       </div>
       <div class="field">
         <p class="label-like">カードの組の番号</p>
-        <p><strong id="c-seed" class="seed">------</strong> <span id="c-tag" class="small"></span></p>
+        <p><strong id="c-seed" class="seed">------</strong><span id="c-tag" class="small"></span></p>
         <p class="hint">同じ番号・同じ範囲なら、どの端末でも同じカードになります。</p>
         <button type="button" id="btn-new-seed" class="btn btn-ghost">別のカードの組にする</button>
         <details class="bulk">
