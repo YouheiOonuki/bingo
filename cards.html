@@ -7,6 +7,9 @@
   <meta name="description" content="ビンゴカードを無料で作って印刷。最大200枚、A4に2枚か4枚、全部ちがうカードで番号（No.）つき。抽選画面でカード番号を入れると当たりを照合できます。登録なし。">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://yorozu-craft.com/bingo/cards.html">
+  <link rel="alternate" hreflang="ja" href="https://yorozu-craft.com/bingo/cards.html">
+  <link rel="alternate" hreflang="en" href="https://yorozu-craft.com/bingo/en/cards.html">
+  <link rel="alternate" hreflang="x-default" href="https://yorozu-craft.com/bingo/cards.html">
 
   <meta property="og:title" content="ビンゴカード印刷（無料・最大200枚・番号つき）｜yorozu-craft">
   <meta property="og:description" content="ビンゴカードを無料で作って印刷。最大200枚、A4に2枚か4枚、番号つきで当たりを照合できます。登録なし。">
@@ -33,9 +36,16 @@
 </head>
 <body>
 
+  <!-- 上端の固定バー（SCREEN.md 1.2・D59）: 印刷ボタンが画面の外にあるときだけ「印刷する」を出す（screen.js）。読み込み時は hidden -->
+  <div class="fixbar" id="fixbar" role="status" hidden>
+    <span class="fixbar-type" id="fixbar-text"></span>
+    <button type="button" class="btn" id="fixbar-print">印刷する</button>
+  </div>
+
   <header class="app-header">
     <h1>ビンゴカードを作って印刷</h1>
     <p class="subtitle">無料・登録なし。最大 200 枚、全部ちがうカードで番号（No.）つき。抽選画面で当たりを照合できます。</p>
+    <p class="lang-switch"><a href="./en/cards.html" hreflang="en" lang="en">English</a></p>
   </header>
 
   <main class="app-main">
@@ -52,37 +62,60 @@
       <a href="./cards.html" id="own-link">自分のカードを新しく作る</a>
     </p>
 
-    <section class="card" aria-labelledby="cards-heading">
+    <!-- 設定 → 出力（SCREEN.md 1.2）: 最小の設定 → 印刷する → 見本 → くわしい設定 → 共有・バックアップ -->
+    <section class="card" id="print-card" aria-labelledby="cards-heading">
       <h2 id="cards-heading">カードの設定</h2>
-      <div class="est-inputs">
-        <div class="field">
-          <label for="c-count">枚数</label>
-          <input type="number" id="c-count" inputmode="numeric" min="1" max="200" value="40">
-          <p class="hint">1〜200 枚。予備を数枚多めに。</p>
+      <fieldset class="plain">
+        <legend class="visually-hidden">枚数・数の範囲・1 ページの枚数</legend>
+        <div class="est-inputs">
+          <div class="field">
+            <label for="c-count">枚数</label>
+            <input type="number" id="c-count" inputmode="numeric" min="1" max="200" value="40">
+            <p class="hint">1〜200 枚。予備を数枚多めに。</p>
+          </div>
+          <div class="field">
+            <label for="c-max">数の範囲</label>
+            <select id="c-max">
+              <option value="75">1〜75（ふつう）</option>
+              <option value="50">1〜50（早く終わる）</option>
+              <option value="90">1〜90</option>
+              <option value="100">1〜100</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="c-per">1 ページに</label>
+            <select id="c-per">
+              <option value="4">4 枚（ふつう）</option>
+              <option value="2">2 枚（大きめ）</option>
+            </select>
+          </div>
         </div>
-        <div class="field">
-          <label for="c-max">数の範囲</label>
-          <select id="c-max">
-            <option value="75">1〜75（ふつう）</option>
-            <option value="50">1〜50（早く終わる）</option>
-            <option value="90">1〜90</option>
-            <option value="100">1〜100</option>
-          </select>
-        </div>
-        <div class="field">
-          <label for="c-per">1 ページ（A4）に</label>
-          <select id="c-per">
-            <option value="4">4 枚（ふつう）</option>
-            <option value="2">2 枚（大きめ）</option>
-          </select>
-        </div>
+      </fieldset>
+      <p id="sheet-info"></p>
+      <div class="btn-row">
+        <button type="button" id="btn-print" class="btn">印刷する</button>
       </div>
+      <p class="hint">用紙は縦・倍率 100%（「用紙に合わせる」も可）。<a href="../print-help.html">スマホで印刷するには →</a></p>
+    </section>
+
+    <div id="sheets" class="sheets" aria-label="印刷の見本"></div>
+    <p class="preview-more"><button type="button" id="btn-preview-all" class="btn btn-ghost" hidden></button></p>
+
+    <details class="card opt" id="opt-cards">
+      <summary>くわしい設定: <span class="opt-state"></span></summary>
       <div class="field">
         <label for="c-title">カードの見出し（なくてもよい）</label>
         <input type="text" id="c-title" maxlength="30" placeholder="例：2026 忘年会">
       </div>
       <div class="field">
         <label class="check-label"><input type="checkbox" id="c-credit" checked> カードの下に「yorozu-craft.com/bingo/print/ で作成」を入れる</label>
+      </div>
+      <div class="field">
+        <label for="c-paper">用紙</label>
+        <select id="c-paper">
+          <option value="a4">A4</option>
+          <option value="letter">レター（US Letter）</option>
+        </select>
       </div>
       <div class="field">
         <p class="label-like">カードの組の番号</p>
@@ -99,30 +132,23 @@
         </details>
         <p id="seed-msg" class="small" aria-live="polite"></p>
       </div>
-    </section>
+    </details>
 
-    <section class="card" aria-labelledby="print-heading">
-      <h2 id="print-heading">印刷</h2>
-      <p id="sheet-info"></p>
-      <button type="button" id="btn-print" class="btn">印刷する</button>
+    <details class="card opt" id="opt-share">
+      <summary>共有・保存とバックアップ</summary>
+      <p class="hint">同じカードを、もう 1 人の幹事の端末で開くリンクです。出た数は入りません（カードの設定だけ）。</p>
       <button type="button" id="btn-share" class="btn btn-ghost">同じカードを開くリンクをコピー</button>
       <p id="share-msg" class="small" aria-live="polite"></p>
-      <p class="hint">A4 縦・倍率 100%（「用紙に合わせる」も可）で印刷します。リンクには出た数は入りません（カードの設定だけ）。</p>
-      <p class="small"><a href="../print-help.html">スマホで印刷するには →</a></p>
-      <p class="small"><a href="./">抽選画面へ（カード番号で当たりを照合）</a></p>
-    </section>
-
-    <div id="sheets" class="sheets" aria-label="印刷の見本"></div>
-
-    <section class="card" aria-labelledby="backup-heading">
-      <h2 id="backup-heading">保存とバックアップ</h2>
       <p class="hint">カードの設定は、この端末のブラウザにだけ自動で保存され、外部には送信されません。書き出し・読み込みはこの画面のボタンから。</p>
-      <button type="button" id="backup-export" class="btn">ファイルに書き出す</button>
-      <button type="button" id="backup-import" class="btn">ファイルから読み込む</button>
+      <div class="btn-row">
+        <button type="button" id="backup-export" class="btn">ファイルに書き出す</button>
+        <button type="button" id="backup-import" class="btn">ファイルから読み込む</button>
+      </div>
       <input type="file" id="backup-file" accept=".json,application/json" hidden>
       <p id="backup-msg" class="small" aria-live="polite"></p>
-    </section>
+    </details>
 
+    <p class="small"><a href="./">抽選画面へ（カード番号で当たりを照合）</a></p>
     <p class="small"><a href="./guide.html#cards">カードの印刷と照合の使い方・よくある質問</a></p>
 
   </main>
@@ -144,6 +170,7 @@
   <script src="./text.js"></script>
   <script src="./calc.js"></script>
   <script src="./common.js"></script>
+  <script src="./screen.js"></script>
   <script src="./cards.js"></script>
   <!-- Cloudflare Web Analytics（Cookie を使わないアクセス解析） --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "b79bf821e1fd4b6683866d493b1de426"}'></script><!-- End Cloudflare Web Analytics -->
 </body>

@@ -97,10 +97,14 @@
   }
 
   // --- オフライン対応 ---
-  // 登録は './sw.js' だけ。scope: '/' を指定しない（README「ツールを追加するとき」13）
+  // 登録は sw.js だけ。scope: '/' を指定しない（README「ツールを追加するとき」13）
+  // sw.js はこのファイルと同じ /bingo/ にある。英語版（/bingo/en/）からも同じ sw.js を登録する（scope は /bingo/ で en/ も含む）
+  var SW_URL = (function () {
+    try { return new URL('sw.js', document.currentScript.src).href; } catch (e) { return './sw.js'; }
+  })();
   function registerSW() {
     if ('serviceWorker' in navigator && (location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1')) {
-      addEventListener('load', function () { navigator.serviceWorker.register('./sw.js').catch(function () {}); });
+      addEventListener('load', function () { navigator.serviceWorker.register(SW_URL).catch(function () {}); });
     }
   }
 

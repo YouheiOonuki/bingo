@@ -324,7 +324,7 @@
     return { min: min, max: max, per: intIn(g.per, 1, 5, 1), drawn: drawn };
   }
 
-  /** カードの設定 {seed, max, count, perPage, title, credit} */
+  /** カードの設定 {seed, max, count, perPage, paper, title, credit}。paper は 'a4'・'letter'・null（null は言語の既定。text.js の paperDefault） */
   function normalizeCards(c, fallbackSeed) {
     c = obj(c);
     return {
@@ -332,6 +332,7 @@
       max: CARD_MAXES.indexOf(Number(c.max)) >= 0 ? Number(c.max) : 75,
       count: intIn(c.count, 1, LIMITS.maxCards, 40),
       perPage: Number(c.perPage) === 2 ? 2 : 4,
+      paper: c.paper === 'a4' || c.paper === 'letter' ? c.paper : null,
       title: str(c.title, LIMITS.titleLen),
       credit: c.credit !== false,
     };
@@ -345,13 +346,13 @@
     });
   }
 
-  /** 画面の設定 {sound, voice, sayLetter（読み上げで列の文字も言う。既定は数字だけ）, effect} */
+  /** 画面の設定 {sound, voice, sayLetter（読み上げで列の文字も言う。null は言語の既定: text.js の speech.sayLetter）, effect} */
   function normalizeSettings(s) {
     s = obj(s);
     return {
       sound: s.sound !== false,
       voice: s.voice === true,
-      sayLetter: s.sayLetter === true,
+      sayLetter: typeof s.sayLetter === 'boolean' ? s.sayLetter : null,
       effect: ['normal', 'short', 'off'].indexOf(s.effect) >= 0 ? s.effect : 'normal',
     };
   }
@@ -376,7 +377,7 @@
     return '#s=' + b64urlEncode(JSON.stringify({ v: 1, seed: c.seed, max: c.max, count: c.count, perPage: c.perPage, title: c.title }));
   }
 
-  /** 共有リンクの # 以降を読む。読めなければ null（印刷クレジットの設定は受け取る側のものを使う） */
+  /** 共有リンクの # 以降を読む。読めなければ null（印刷クレジットと用紙の設定は受け取る側のものを使う） */
   function decodeShare(hash) {
     var m = /^#s=([A-Za-z0-9_-]{1,2000})$/.exec(hash || '');
     if (!m) return null;
@@ -385,6 +386,7 @@
     if (!o || o.v !== 1 || !normalizeSeed(o.seed)) return null;
     var c = normalizeCards(o);
     delete c.credit;
+    delete c.paper;   // 用紙は受け取った側のプリンターに合わせる
     return c;
   }
 

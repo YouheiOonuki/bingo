@@ -7,6 +7,9 @@
   <meta name="description" content="登録なし・無料のビンゴ抽選アプリ。大画面・効果音・読み上げ、ビンゴカード印刷（最大200枚）とカード番号での当たり照合。忘年会・新年会の幹事に。オフラインでも使えます。">
   <meta name="robots" content="index, follow">
   <link rel="canonical" href="https://yorozu-craft.com/bingo/">
+  <link rel="alternate" hreflang="ja" href="https://yorozu-craft.com/bingo/">
+  <link rel="alternate" hreflang="en" href="https://yorozu-craft.com/bingo/en/">
+  <link rel="alternate" hreflang="x-default" href="https://yorozu-craft.com/bingo/">
 
   <meta property="og:title" content="大人数ビンゴ抽選｜yorozu-craft">
   <meta property="og:description" content="登録なし・無料のビンゴ抽選アプリ。大画面・効果音・読み上げ、ビンゴカード印刷（最大200枚）とカード番号での当たり照合。忘年会・新年会の幹事に。">
@@ -48,6 +51,7 @@
   <header class="app-header">
     <h1>大人数ビンゴ抽選</h1>
     <p class="subtitle">登録なし・無料。大画面・読み上げ・カード印刷と当たり照合。オフラインでも使えます。</p>
+    <p class="lang-switch"><a href="./en/" hreflang="en" lang="en">English</a></p>
   </header>
 
   <main class="app-main wide">
@@ -109,9 +113,9 @@
         <p id="check-noset" class="small">カードの組がまだありません。<a href="./cards.html">カードを印刷する</a>と、ここで照合できます。</p>
       </section>
 
-      <!-- 景品 -->
-      <section class="card" id="prizes" aria-labelledby="prizes-heading">
-        <h2 id="prizes-heading">景品の順番（なくてもよい）</h2>
+      <!-- 景品（なくてもよいので折りたたむ。summary に今の個数） -->
+      <details class="card opt" id="prizes">
+        <summary>景品の順番（なくてもよい）: <span class="opt-state" id="prize-state"></span></summary>
         <p class="hint">渡す順に並べておくと、抽選画面に「次の景品」が出ます。</p>
         <ol id="prize-list" class="prize-list"></ol>
         <form id="prize-form" class="inline-form">
@@ -125,7 +129,7 @@
           <textarea id="prize-bulk" rows="5" placeholder="1等 ワイヤレスイヤホン&#10;2等 ギフト券 3,000円&#10;3等 お菓子セット"></textarea>
           <button type="button" id="prize-bulk-add" class="btn">下に足す</button>
         </details>
-      </section>
+      </details>
 
       <!-- 設定 -->
       <section class="card" id="settings" aria-labelledby="settings-heading">
@@ -172,9 +176,9 @@
         <button type="button" id="btn-reset" class="btn btn-ghost">はじめからにする</button>
       </section>
 
-      <!-- 時間の目安 -->
-      <section class="card" id="estimate" aria-labelledby="estimate-heading">
-        <h2 id="estimate-heading">景品がなくなるまでの時間の目安</h2>
+      <!-- 時間の目安（一部の人だけが使うので折りたたむ。WRITING.md 1 章・SCREEN.md 1.1 の 4） -->
+      <details class="card opt" id="estimate">
+        <summary>景品がなくなるまでの時間の目安</summary>
         <p class="hint">人数と景品の数から、景品の数だけビンゴが出るまでに数をいくつ引くかを、ためしに 300 回抽選して数えます。</p>
         <div class="est-inputs">
           <div class="field"><label for="est-people">参加人数（配るカード）</label><input type="number" id="est-people" inputmode="numeric" min="1" max="200" value="50"></div>
@@ -183,7 +187,7 @@
         </div>
         <button type="button" id="btn-estimate" class="btn">目安を出す</button>
         <div id="est-result" class="est-result" aria-live="polite"></div>
-      </section>
+      </details>
 
     </div>
 
@@ -208,14 +212,14 @@
       </div>
     </section>
 
-    <section class="card" id="backup" aria-labelledby="backup-heading">
-      <h2 id="backup-heading">保存とバックアップ</h2>
+    <details class="card opt" id="backup">
+      <summary>保存とバックアップ</summary>
       <p class="hint">出た数・景品・カードの設定は、この端末のブラウザにだけ自動で保存され、外部には送信されません。書き出し・読み込みはこの画面のボタンから。</p>
       <button type="button" id="backup-export" class="btn">ファイルに書き出す</button>
       <button type="button" id="backup-import" class="btn">ファイルから読み込む</button>
       <input type="file" id="backup-file" accept=".json,application/json" hidden>
       <p id="backup-msg" class="small" aria-live="polite"></p>
-    </section>
+    </details>
 
     <p class="small"><a href="./guide.html">使い方・大画面のコツ・よくある質問</a></p>
 

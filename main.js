@@ -108,8 +108,10 @@
     } catch (e) { /* 読み上げできない端末では何もしない */ }
   }
   function speakNumbers(list) {
-    speak(list.map(function (n) { return T.speech.one(n, state.settings.sayLetter ? letter(n) : ''); }).join(T.speech.join));
+    speak(list.map(function (n) { return T.speech.one(n, sayLetter() ? letter(n) : ''); }).join(T.speech.join));
   }
+  /** 読み上げで列の文字も言うか。設定で変えていなければ言語の既定（日本語は数だけ、英語は "B 12"） */
+  function sayLetter() { return typeof state.settings.sayLetter === 'boolean' ? state.settings.sayLetter : T.speech.sayLetter; }
 
   // ---------------------------------------------------------------
   // 出た数の一覧（B・I・N・G・O の行、または番号の並び）
@@ -210,7 +212,7 @@
     var el = $('batch');
     if (picked && picked.length > 1) {
       el.hidden = false;
-      el.textContent = picked.map(label).join('　');
+      el.textContent = picked.map(label).join(T.batchJoin);
     } else {
       el.hidden = true;
     }
@@ -388,7 +390,7 @@
     $('range-lock').hidden = !locked;
     $('per').value = String(game.per);
     $('effect').value = state.settings.effect;
-    $('say-letter').checked = state.settings.sayLetter;
+    $('say-letter').checked = sayLetter();
   }
   function applyRange() {
     if (g().drawn.length) return;
@@ -497,6 +499,7 @@
   // 景品の順番
   // ---------------------------------------------------------------
   function renderPrizes() {
+    $('prize-state').textContent = T.prizeState(state.prizes.length);
     var ol = $('prize-list');
     ol.textContent = '';
     var next = nextPrizeIndex();
@@ -509,7 +512,7 @@
       name.addEventListener('change', function () { p.name = this.value.slice(0, C.LIMITS.prizeLen); save('prizes'); renderNextPrize(); });
       var win = document.createElement('input');
       win.type = 'text'; win.maxLength = C.LIMITS.winnerLen; win.value = p.winner; win.placeholder = T.prizeWinner; win.className = 'prize-winner';
-      win.setAttribute('aria-label', T.prizeWinner + '（' + (i + 1) + '）');
+      win.setAttribute('aria-label', T.prizeWinnerLabel(i + 1));
       win.addEventListener('change', function () { p.winner = this.value.slice(0, C.LIMITS.winnerLen); save('prizes'); renderPrizes(); renderNextPrize(); });
       var tools = document.createElement('span');
       tools.className = 'prize-tools';
@@ -602,9 +605,9 @@
   function summaryText() {
     var d = new Date();
     return T.summary({
-      date: d.getFullYear() + '/' + (d.getMonth() + 1) + '/' + d.getDate(),
+      date: T.date(d),
       count: g().drawn.length,
-      range: g().min + '〜' + g().max,
+      range: T.rangeLabel(g().min, g().max),
       prizes: state.prizes,
       order: g().drawn.map(label),
     });

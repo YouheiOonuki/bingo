@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bingo Card Generator (printable, free, no sign-up) | yorozu-craft</title>
+  <meta name="description" content="Make and print up to 200 unique 1–75 bingo cards, 2 or 4 per Letter or A4 page. Each card has a number you can check on the bingo caller. Free, no sign-up.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://yorozu-craft.com/bingo/en/cards.html">
+  <link rel="alternate" hreflang="ja" href="https://yorozu-craft.com/bingo/cards.html">
+  <link rel="alternate" hreflang="en" href="https://yorozu-craft.com/bingo/en/cards.html">
+  <link rel="alternate" hreflang="x-default" href="https://yorozu-craft.com/bingo/cards.html">
+
+  <meta property="og:title" content="Bingo Card Generator (printable, free, no sign-up) | yorozu-craft">
+  <meta property="og:description" content="Print up to 200 unique bingo cards, 2 or 4 per page, each with a number you can check on the bingo caller. Free, no sign-up.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://yorozu-craft.com/bingo/en/cards.html">
+  <meta property="og:site_name" content="yorozu-craft">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:locale:alternate" content="ja_JP">
+  <meta property="og:image" content="https://yorozu-craft.com/bingo/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#8b4513" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1c1814" media="(prefers-color-scheme: dark)">
+
+  <!-- Google AdSense（サイト所有確認 + 広告配信スクリプト）。印刷には出さない（style.css の @media print） -->
+  <meta name="google-adsense-account" content="ca-pub-5375267956079717">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5375267956079717"
+     crossorigin="anonymous"></script>
+
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="../apple-touch-icon.png">
+  <link rel="manifest" href="../manifest.webmanifest">
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+  <!-- 上端の固定バー（SCREEN.md 1.2・D59）: 印刷ボタンが画面の外にあるときだけ（screen.js）。読み込み時は hidden -->
+  <div class="fixbar" id="fixbar" role="status" hidden>
+    <span class="fixbar-type" id="fixbar-text"></span>
+    <button type="button" class="btn" id="fixbar-print">Print</button>
+  </div>
+
+  <header class="app-header">
+    <h1>Bingo Card Generator</h1>
+    <p class="subtitle">Printable, free, no sign-up. Up to 200 unique cards, each numbered so you can check winners on the caller.</p>
+    <p class="lang-switch"><a href="../cards.html" hreflang="ja" lang="ja">日本語</a></p>
+  </header>
+
+  <main class="app-main">
+
+    <nav class="mode-switch" aria-label="Bingo pages">
+      <a href="./">Call numbers</a>
+      <a href="./cards.html" aria-current="page">Print bingo cards</a>
+    </nav>
+
+    <p id="shared-banner" class="card banner" hidden>
+      <span id="shared-text"></span>
+      <button type="button" id="btn-save-shared" class="btn">Save these settings</button>
+      <a href="./cards.html" id="own-link">Make your own cards</a>
+    </p>
+
+    <section class="card" id="print-card" aria-labelledby="cards-heading">
+      <h2 id="cards-heading">Card settings</h2>
+      <fieldset class="plain">
+        <legend class="visually-hidden">Number of cards, number range, cards per page</legend>
+        <div class="est-inputs">
+          <div class="field">
+            <label for="c-count">Cards</label>
+            <input type="number" id="c-count" inputmode="numeric" min="1" max="200" value="40">
+            <p class="hint">1–200. Print a few spares.</p>
+          </div>
+          <div class="field">
+            <label for="c-max">Number range</label>
+            <select id="c-max">
+              <option value="75">1–75 (standard)</option>
+              <option value="50">1–50 (faster game)</option>
+              <option value="90">1–90</option>
+              <option value="100">1–100</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="c-per">Per page</label>
+            <select id="c-per">
+              <option value="4">4 cards</option>
+              <option value="2">2 cards (larger)</option>
+            </select>
+          </div>
+        </div>
+      </fieldset>
+      <p id="sheet-info"></p>
+      <div class="btn-row">
+        <button type="button" id="btn-print" class="btn">Print</button>
+      </div>
+      <p class="hint">Portrait, 100% scale (or "Fit to page"). Paper size is under More settings.</p>
+    </section>
+
+    <div id="sheets" class="sheets" aria-label="Print preview"></div>
+    <p class="preview-more"><button type="button" id="btn-preview-all" class="btn btn-ghost" hidden></button></p>
+
+    <details class="card opt" id="opt-cards">
+      <summary>More settings: <span class="opt-state"></span></summary>
+      <div class="field">
+        <label for="c-title">Card title (optional)</label>
+        <input type="text" id="c-title" maxlength="30" placeholder="e.g. Holiday Party 2026">
+      </div>
+      <div class="field">
+        <label class="check-label"><input type="checkbox" id="c-credit" checked> Print "Made at yorozu-craft.com/bingo/en/print/" under each card</label>
+      </div>
+      <div class="field">
+        <label for="c-paper">Paper</label>
+        <select id="c-paper">
+          <option value="letter">Letter (8.5 × 11 in)</option>
+          <option value="a4">A4</option>
+        </select>
+      </div>
+      <div class="field">
+        <p class="label-like">Card set code</p>
+        <p><strong id="c-seed" class="seed">------</strong><span id="c-tag" class="small"></span></p>
+        <p class="hint">The same code and range make the same cards on any device.</p>
+        <button type="button" id="btn-new-seed" class="btn btn-ghost">Make a different card set</button>
+        <details class="bulk">
+          <summary>Enter a code to make the same cards</summary>
+          <div class="inline-form">
+            <label for="c-seed-input" class="visually-hidden">Card set code (6 characters)</label>
+            <input type="text" id="c-seed-input" maxlength="8" autocomplete="off" placeholder="e.g. 7KQ2MX">
+            <button type="button" id="btn-apply-seed" class="btn">Use this code</button>
+          </div>
+        </details>
+        <p id="seed-msg" class="small" aria-live="polite"></p>
+      </div>
+    </details>
+
+    <details class="card opt" id="opt-share">
+      <summary>Share, save and back up</summary>
+      <p class="hint">A link that opens the same cards on a co-host's device. It holds the card settings only, not the drawn numbers.</p>
+      <button type="button" id="btn-share" class="btn btn-ghost">Copy link to these cards</button>
+      <p id="share-msg" class="small" aria-live="polite"></p>
+      <p class="hint">Card settings are saved automatically in this browser only and never sent anywhere. Export and import with the buttons below.</p>
+      <div class="btn-row">
+        <button type="button" id="backup-export" class="btn">Export to file</button>
+        <button type="button" id="backup-import" class="btn">Import from file</button>
+      </div>
+      <input type="file" id="backup-file" accept=".json,application/json" hidden>
+      <p id="backup-msg" class="small" aria-live="polite"></p>
+    </details>
+
+    <p class="small"><a href="./">Go to the caller (check cards by number)</a></p>
+    <p class="small"><a href="./guide.html#cards">How to print and check cards, and FAQ</a></p>
+
+  </main>
+
+  <footer class="app-footer">
+    <nav class="footer-nav" aria-label="Footer">
+      <ul>
+        <li><a href="../../en/">yorozu-craft</a></li>
+        <li><a href="./">Bingo Caller</a></li>
+        <li><a href="./cards.html" aria-current="page">Bingo Card Generator</a></li>
+        <li><a href="./guide.html">Guide and FAQ</a></li>
+        <li><a href="../../en/about.html">About</a></li>
+        <li><a href="../../en/privacy-policy.html">Privacy policy</a></li>
+      </ul>
+    </nav>
+    <p>&copy; 2026 yorozu-craft. All rights reserved.</p>
+  </footer>
+
+  <script src="../text.js"></script>
+  <script src="../calc.js"></script>
+  <script src="../common.js"></script>
+  <script src="../screen.js"></script>
+  <script src="../cards.js"></script>
+  <!-- Cloudflare Web Analytics（Cookie を使わないアクセス解析） --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "b79bf821e1fd4b6683866d493b1de426"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>
