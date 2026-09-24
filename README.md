@@ -1,6 +1,6 @@
 # 大人数ビンゴ抽選
 
-公開 URL: **https://yorozu-craft.com/bingo/**
+公開 URL: **https://yorozu-craft.com/bingo/**（英語版 **https://yorozu-craft.com/bingo/en/**）
 
 登録なし・無料のビンゴ抽選アプリ。大画面・効果音・読み上げ、ビンゴカード印刷（最大 200 枚）とカード番号での当たり照合。忘年会・新年会の幹事向け。オフラインでも動く。
 yorozu-craft のツールの1つです（共通ルールは [youheioonuki.github.io の README](https://github.com/YouheiOonuki/youheioonuki.github.io) を参照）。企画書は yorozu-plans の `docs/12_ビンゴ.md`。
@@ -9,13 +9,13 @@ yorozu-craft のツールの1つです（共通ルールは [youheioonuki.github
 
 - 抽選: 1〜75（ほか 1〜50・90・100、自分で決める範囲 最大 999）。重ならない。ドラムロールの演出（ふつう・短く・なし、途中で押すとすぐ出る）、Web Audio の効果音、speechSynthesis の読み上げ、B・I・N・G・O の出た数の一覧、1 つ取り消す、1 回に 2〜5 個引く（時間短縮）、全画面（プロジェクター用）、キーボード（Space・Enter で引く、F 全画面、M 効果音、V 読み上げ）
 - 数は演出の前に決めて保存する。再読み込み・ブラウザを閉じても続きから
-- ビンゴカード印刷（`cards.html`）: 1〜200 枚、A4 に 4 枚か 2 枚、中央 FREE、見出し、カード番号 `No.KR-042`（頭 2 文字はカードの組の目印）、クレジット `yorozu-craft.com/bingo/print/ で作成`（既定オン・外せる）
+- ビンゴカード印刷（`cards.html`）: 1〜200 枚、A4 かレター（US Letter）に 4 枚か 2 枚（用紙の既定は日本語 A4・英語 Letter。`@page` は `cards.js` が `<style id="page-size">` で差し替える）、中央 FREE、見出し、カード番号 `No.KR-042`（頭 2 文字はカードの組の目印）、クレジット `yorozu-craft.com/bingo/print/ で作成`（既定オン・外せる）
 - 照合: カード番号を入れると、出た数でビンゴか・何個目の数でそろったか・リーチの数を出す。「この人に次の景品を渡す」。抽選画面にカードの組のビンゴ・リーチの枚数
 - 景品の順番（次の景品を抽選画面に出す・当たった人を記入）
 - 時間の目安: 人数と景品の数から、景品の数だけビンゴが出るまでに引く数を 300 回の試行で数え、1 回に 1〜3 個ずつの回数と時間を出す
 - 共有リンク `cards.html#s=`: カードの設定（組の番号・枚数・範囲・1 ページの枚数・見出し）だけ。出た数は入れない。受け取った側は「この設定を保存する」まで自分の設定を上書きしない
 - 保存: `bingo_game`・`bingo_cards`・`bingo_prizes`・`bingo_settings`（localStorage）。ファイルへの書き出し・読み込み（`bingo-backup-YYYYMMDD.json`、決定 D31）
-- オフライン（PWA）: `sw.js`（キャッシュ名 `bingo-v5`、自分のパスだけ扱う）、`manifest.webmanifest`（`id: /bingo/`）
+- オフライン（PWA）: `sw.js`（キャッシュ名 `bingo-v6`、英語のページも先に取得、自分のパスだけ扱う）、`manifest.webmanifest`（`id: /bingo/`）
 - 結果のまとめ（コピー）と、その下にだけほかのツールへの 2 行（傾斜割り勘・ルーレット。README ルール 21）
 - 広告: 抽選画面（`index.html`）はプロジェクターに全画面で映して操作するので **AdSense は meta だけ**（ルール 5 の全画面の例外。サイト横断チェックの `META_ONLY_PAGES` に `/bingo/` を足す必要がある）。カード印刷・使い方・着地ページは meta＋スクリプト。印刷には広告を出さない
 
@@ -24,6 +24,8 @@ yorozu-craft のツールの1つです（共通ルールは [youheioonuki.github
 - カード: `seed`（6 文字。0・1・I・O を使わない 32 文字）と範囲と何枚目かから、mulberry32 で各列（範囲を 5 等分、75 なら B1-15 …）から 5 個ずつ選ぶ。組の中で同じカードが出たらそのカードだけ作り直す。枚数を増やしても前のカードは変わらない
 - 組の目印: `seed` と範囲のハッシュから英字 2 文字（I・O を除く 24 文字）。別の組のカード番号を入れると知らせる
 - 抽選の乱数: `crypto.getRandomValues`（まだ出ていない数から等確率）
+- 英語版（`en/index.html`・`en/cards.html`・`en/guide.html`・着地ページ `en/print/`）: 同じ JS・CSS を `../` から読み、`<html lang="en">` で `text.js` の `en` を使う。読み上げは `en-US` で、既定で列の文字も言う（"B 12"。設定 `sayLetter` が `null` なら言語の既定、自分で変えたら両言語でその値）。カードのクレジットは `yorozu-craft.com/bingo/en/print/`。保存（localStorage）は日英で共通。`sw.js` は `/bingo/sw.js` の 1 つ（英語のページからも同じものを登録）
+- 画面の骨組み（SCREEN.md）: カード印刷は 1.2 設定 → 出力（最小の設定 3 項目 → 印刷する → 見本は 1 ページ目だけ → くわしい設定・共有とバックアップは `<details>`）。印刷ボタンが画面の外にあるときだけ上端に「印刷する」の固定バー（`screen.js`、yorozu-template と同じ）。抽選画面は景品・時間の目安・保存を `<details>` に畳む
 - 画面に JS から出す文はすべて `text.js`（`TEXT`）に集め、読み上げの言語（`speech.lang`）・列の文字の読み・数の言い方もそこに持つ。英語版は `TEXTS` に言語を足して `<html lang>` で選ぶ形にできる（テストで JS に日本語の文字列が無いことを確かめている）
 
 ## 保守
@@ -43,6 +45,8 @@ yorozu-craft のツールの1つです（共通ルールは [youheioonuki.github
 | `cards.html` | ビンゴカードの作成と印刷・共有リンク |
 | `guide.html` | 使い方・大画面のコツ・カードの印刷と照合・早く終わらせるコツ・よくある質問（FAQPage）・しくみ・ご利用上の注意・更新履歴 |
 | `print/index.html` | 印刷したカードのクレジットから来た人の着地ページ（noindex、sitemap に載せない） |
+| `en/` | 英語版（抽選 `index.html`・カード `cards.html`・使い方 `guide.html`・着地ページ `print/`）。hreflang で日本語の対と結ぶ |
+| `screen.js` | 上端の固定バー・details の状態表示（yorozu-template からそのまま写した） |
 | `calc.js` | ロジック（純粋関数）: 乱数・カード・カード番号・判定・抽選・取り消し・時間の目安・正規化・共有・バックアップ |
 | `text.js` | 画面に JS から出す文と読み上げ |
 | `common.js` | 保存・バックアップ・コピー・乱数・Service Worker の登録（2 ページ共通） |

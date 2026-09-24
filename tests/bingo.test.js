@@ -250,26 +250,31 @@ test('正規化: 抽選の状態', () => {
 
 test('正規化: カードの設定・景品・画面の設定', () => {
   assert.deepEqual(C.normalizeCards({ seed: 'kr7m2x', max: 90, count: 500, perPage: 3, title: 'x'.repeat(50), credit: false }),
-    { seed: 'KR7M2X', max: 90, count: 40, perPage: 4, title: 'x'.repeat(30), credit: false });
-  assert.deepEqual(C.normalizeCards({}), { seed: null, max: 75, count: 40, perPage: 4, title: '', credit: true });
+    { seed: 'KR7M2X', max: 90, count: 40, perPage: 4, paper: null, title: 'x'.repeat(30), credit: false });
+  assert.deepEqual(C.normalizeCards({}), { seed: null, max: 75, count: 40, perPage: 4, paper: null, title: '', credit: true });
+  assert.equal(C.normalizeCards({ paper: 'letter' }).paper, 'letter');
+  assert.equal(C.normalizeCards({ paper: 'a4' }).paper, 'a4');
+  assert.equal(C.normalizeCards({ paper: 'B5' }).paper, null, '知らない用紙は言語の既定');
   assert.equal(C.normalizeCards({ seed: 'bad' }, 'AAAAAA').seed, 'AAAAAA');
   assert.equal(C.normalizeCards({ count: 200 }).count, 200);
   assert.deepEqual(C.normalizePrizes([{ name: '1等', winner: 'No.AB-001' }, null, { name: 3 }, 'x']),
     [{ name: '1等', winner: 'No.AB-001' }, { name: '', winner: '' }, { name: '', winner: '' }, { name: '', winner: '' }]);
   assert.equal(C.normalizePrizes(Array(150).fill({ name: 'a' })).length, 100);
   assert.deepEqual(C.normalizePrizes('x'), []);
-  assert.deepEqual(C.normalizeSettings(undefined), { sound: true, voice: false, sayLetter: false, effect: 'normal' });
-  assert.deepEqual(C.normalizeSettings({ sound: false, voice: true, effect: 'off' }), { sound: false, voice: true, sayLetter: false, effect: 'off' });
+  assert.deepEqual(C.normalizeSettings(undefined), { sound: true, voice: false, sayLetter: null, effect: 'normal' });
+  assert.deepEqual(C.normalizeSettings({ sound: false, voice: true, effect: 'off' }), { sound: false, voice: true, sayLetter: null, effect: 'off' });
   assert.equal(C.normalizeSettings({ sayLetter: true }).sayLetter, true);
+  assert.equal(C.normalizeSettings({ sayLetter: false }).sayLetter, false, '自分で外したら言語にかかわらず外したまま');
+  assert.equal(C.normalizeSettings({ sayLetter: 'yes' }).sayLetter, null);
   assert.equal(C.normalizeSettings({ effect: 'crazy' }).effect, 'normal');
 });
 
 test('共有リンク: カードの設定だけが往復する（日本語の見出しも）。同じカードが作れる', () => {
-  const cards = { seed: 'KR7M2X', max: 90, count: 120, perPage: 2, title: '2026 忘年会🎉', credit: false };
+  const cards = { seed: 'KR7M2X', max: 90, count: 120, perPage: 2, paper: 'letter', title: '2026 忘年会🎉', credit: false };
   const hash = C.encodeShare(cards);
   assert.match(hash, /^#s=[A-Za-z0-9_-]+$/);
   const back = C.decodeShare(hash);
-  assert.deepEqual(back, { seed: 'KR7M2X', max: 90, count: 120, perPage: 2, title: '2026 忘年会🎉' });
+  assert.deepEqual(back, { seed: 'KR7M2X', max: 90, count: 120, perPage: 2, title: '2026 忘年会🎉' }, '用紙とクレジットは受け取った側のもの');
   assert.deepEqual(C.genCardSet(back.seed, back.max, back.count), C.genCardSet(cards.seed, cards.max, cards.count));
   assert.ok(!/drawn/.test(Buffer.from(hash.slice(3), 'base64url').toString()), '出た数は入れない');
 });

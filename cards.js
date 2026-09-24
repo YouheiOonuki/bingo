@@ -4,13 +4,13 @@
 // ===========================
 (function () {
   'use strict';
-  var C = window.Calc, T = window.TEXT, K = window.Common;
+  var C = window.Calc, T = window.TEXT, K = window.Common, S = window.YorozuScreen;
   var $ = function (id) { return document.getElementById(id); };
 
   var saved = K.loadAll().cards;
   var shared = C.decodeShare(location.hash);
   // 共有リンクで開いたときは、保存を押すまでこの端末の設定を上書きしない
-  var cur = shared ? Object.assign({ credit: saved ? saved.credit : true }, shared)
+  var cur = shared ? Object.assign({ credit: saved ? saved.credit : true, paper: saved ? saved.paper : null }, shared)
     : saved || C.normalizeCards({ seed: C.newSeed(K.rand) });
 
   function persist() {
@@ -19,17 +19,24 @@
     saved = cur;
   }
 
+  /** 用紙。設定で変えていなければ言語の既定（日本語 A4・英語 Letter） */
+  function paper() { return cur.paper || T.paperDefault; }
+  var PAPER_PX = { a4: 794, letter: 816 };   // 用紙の幅（96dpi の px。見本を画面の幅に合わせるのに使う）
+  var PAGE_CSS = { a4: 'A4 portrait', letter: 'letter portrait' };
+
   function renderForm() {
     $('c-count').value = cur.count;
     $('c-max').value = String(cur.max);
     $('c-per').value = String(cur.perPage);
     $('c-title').value = cur.title;
     $('c-credit').checked = cur.credit;
+    $('c-paper').value = paper();
     $('c-seed').textContent = cur.seed;
     $('c-tag').textContent = T.tagNote(C.setTag(cur.seed, cur.max));
     ['c-count', 'c-max', 'c-title', 'btn-new-seed', 'btn-apply-seed', 'c-seed-input'].forEach(function (id) { $(id).disabled = !!shared; });
     $('shared-banner').hidden = !shared;
     if (shared) $('shared-text').textContent = T.sharedBanner(cur);
+    S.detailsSummary({ 'opt-cards': T.optCards({ title: cur.title, credit: cur.credit, paper: paper() }) });
   }
 
   function cardEl(card, index) {
@@ -80,7 +87,7 @@
     var pages = Math.ceil(cards.length / per);
     for (var p = 0; p < pages; p++) {
       var sheet = document.createElement('div');
-      sheet.className = 'sheet sheet--' + per;
+      sheet.className = 'sheet sheet--' + per + (paper() === 'letter' ? ' sheet--letter' : '');
       for (var k = 0; k < per; k++) {
         var idx = p * per + k;
         var slot = document.createElement('div');
@@ -90,15 +97,37 @@
       }
       box.appendChild(sheet);
     }
-    $('sheet-info').textContent = T.sheetInfo(cards.length, pages, per);
+    $('sheet-info').textContent = T.sheetInfo(cards.length, pages, per, paper());
+    pageSize();
+    var more = $('btn-preview-all');
+    more.hidden = pages < 2;
+    more.textContent = box.classList.contains('show-all') ? T.previewOne : T.previewAll(pages);
+    bar.set(T.fixbarInfo(cards.length, pages));
     fitZoom();
   }
 
-  // 見本を画面の幅に合わせて縮める（A4 の幅 210mm ≒ 794px）
+  // 印刷の用紙（@page）。CSS の @page はクラスで切り替えられないので、<style> を差し替える
+  function pageSize() {
+    var el = $('page-size');
+    if (!el) { el = document.createElement('style'); el.id = 'page-size'; document.head.appendChild(el); }
+    var css = '@page { size: ' + PAGE_CSS[paper()] + '; margin: 0; }';
+    if (el.textContent !== css) el.textContent = css;
+  }
+
+  // 見本を画面の幅に合わせて縮める（A4 の幅 210mm ≒ 794px、Letter 8.5in = 816px）
   function fitZoom() {
     var w = $('sheets').clientWidth || 360;
-    $('sheets').style.setProperty('--z', String(Math.min(1, (w - 4) / 794).toFixed(3)));
+    $('sheets').style.setProperty('--z', String(Math.min(1, (w - 4) / PAPER_PX[paper()]).toFixed(3)));
   }
+
+  // 見本は 1 ページ目だけ。ボタンで全ページを出す（印刷はいつも全ページ）
+  $('btn-preview-all').addEventListener('click', function () {
+    var all = $('sheets').classList.toggle('show-all');
+    this.textContent = all ? T.previewOne : T.previewAll($('sheets').children.length);
+  });
+
+  // 上端の固定バー（SCREEN.md 1.2）: 印刷ボタンが画面の外にあるときだけ「印刷する」
+  var bar = S.fixedBar({ bar: 'fixbar', watch: 'btn-print', text: 'fixbar-text', onClick: function () { $('btn-print').click(); } });
   window.addEventListener('resize', fitZoom);
   // ブラウザのメニュー（Ctrl+P）から印刷したときも、照合できるように保存する
   window.addEventListener('beforeprint', function () { persist(); });
@@ -119,11 +148,16 @@
     cur = C.normalizeCards(Object.assign({}, cur, { perPage: Number(this.value) }));
     persist(); renderSheets();
   });
+  $('c-paper').addEventListener('change', function () {
+    // 用紙も受け取った側で変えてよい（カードの中身は変わらない）
+    cur = C.normalizeCards(Object.assign({}, cur, { paper: this.value }));
+    persist(); renderForm(); renderSheets();
+  });
   $('c-title').addEventListener('change', function () { changeCards({ title: this.value }); });
   $('c-credit').addEventListener('change', function () {
     cur.credit = this.checked;
     if (!shared) persist(); else if (saved) { saved.credit = this.checked; K.store.set('cards', saved); }
-    renderSheets();
+    renderForm(); renderSheets();
   });
   $('btn-new-seed').addEventListener('click', function () { changeCards({ seed: C.newSeed(K.rand) }, true); $('seed-msg').textContent = T.seedApplied; });
   $('btn-apply-seed').addEventListener('click', function () {
@@ -140,6 +174,7 @@
     persist();
     history.replaceState(null, '', location.pathname);
     renderForm();
+    $('opt-share').open = true;
     $('share-msg').textContent = T.sharedSaved;
   });
 
@@ -161,7 +196,7 @@
     var s = C.decodeShare(location.hash);
     if (!s) return;
     shared = s;
-    cur = Object.assign({ credit: cur.credit }, s);
+    cur = Object.assign({ credit: cur.credit, paper: cur.paper }, s);
     render();
   });
 

@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bingo Caller (free, no sign-up, printable cards) | yorozu-craft</title>
+  <meta name="description" content="Free online bingo caller for a projector or TV: drum roll, voice calls (&quot;B 12&quot;), 1–75 board, and printable bingo cards you can check by card number. No sign-up. Works offline.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://yorozu-craft.com/bingo/en/">
+  <link rel="alternate" hreflang="ja" href="https://yorozu-craft.com/bingo/">
+  <link rel="alternate" hreflang="en" href="https://yorozu-craft.com/bingo/en/">
+  <link rel="alternate" hreflang="x-default" href="https://yorozu-craft.com/bingo/">
+
+  <meta property="og:title" content="Bingo Caller | yorozu-craft">
+  <meta property="og:description" content="Free online bingo caller for a projector or TV, with voice calls and printable bingo cards you can check by card number. No sign-up.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://yorozu-craft.com/bingo/en/">
+  <meta property="og:site_name" content="yorozu-craft">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:locale:alternate" content="ja_JP">
+  <meta property="og:image" content="https://yorozu-craft.com/bingo/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#8b4513" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1c1814" media="(prefers-color-scheme: dark)">
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Bingo Caller",
+    "description": "Free online bingo caller for a projector or TV, with voice calls and printable bingo cards you can check by card number. No sign-up. Works offline.",
+    "url": "https://yorozu-craft.com/bingo/en/",
+    "applicationCategory": "UtilitiesApplication",
+    "operatingSystem": "All",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "inLanguage": "en"
+  }
+  </script>
+
+  <!-- Google AdSense: 抽選画面は全画面で映して操作するので meta だけ（日本語の抽選画面と同じ。README「ツールを追加するとき」5・23） -->
+  <meta name="google-adsense-account" content="ca-pub-5375267956079717">
+
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="../apple-touch-icon.png">
+  <link rel="manifest" href="../manifest.webmanifest">
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+  <header class="app-header">
+    <h1>Bingo Caller</h1>
+    <p class="subtitle">Free, no sign-up. Big-screen draws with voice calls, plus printable cards you can check by number. Works offline.</p>
+    <p class="lang-switch"><a href="../" hreflang="ja" lang="ja">日本語</a></p>
+  </header>
+
+  <main class="app-main wide">
+
+    <nav class="mode-switch" aria-label="Bingo pages">
+      <a href="./" aria-current="page">Call numbers</a>
+      <a href="./cards.html">Print bingo cards</a>
+    </nav>
+
+    <!-- 抽選（全画面にする部分） -->
+    <section id="stage" class="card stage" aria-labelledby="stage-heading">
+      <div class="stage-bar">
+        <h2 id="stage-heading" class="stage-title">Draw</h2>
+        <p id="stage-count" class="stage-count">0 drawn · 75 left</p>
+        <div class="stage-tools">
+          <button type="button" id="btn-sound" class="icon-btn" aria-pressed="true" title="Sound (M)">Sound</button>
+          <button type="button" id="btn-voice" class="icon-btn" aria-pressed="false" title="Voice (V)">Voice</button>
+          <button type="button" id="btn-full" class="icon-btn" title="Full screen (F)">Full screen</button>
+        </div>
+      </div>
+
+      <div class="stage-body">
+        <div class="ball-area">
+          <div id="ball" class="ball" aria-hidden="true"><span id="ball-letter" class="ball-letter"></span><span id="ball-num" class="ball-num">?</span></div>
+          <p id="batch" class="batch" hidden></p>
+          <p id="announce" class="visually-hidden" aria-live="assertive"></p>
+          <div class="draw-row">
+            <button type="button" id="btn-draw" class="btn btn-draw">Draw</button>
+          </div>
+          <p class="draw-hint">Space or Enter also draws</p>
+          <div class="sub-row">
+            <button type="button" id="btn-undo" class="btn btn-ghost">Undo last</button>
+            <span id="next-prize" class="next-prize" hidden></span>
+          </div>
+          <p id="set-status" class="set-status" hidden></p>
+        </div>
+
+        <div class="history-area">
+          <h3 class="history-title">Called numbers</h3>
+          <p id="recent" class="recent"></p>
+          <div id="board" class="board"></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="grid-2">
+
+      <section class="card" id="check" aria-labelledby="check-heading">
+        <h2 id="check-heading">Check a card by number</h2>
+        <p class="hint">Enter the "No." printed under a card to see if it has bingo.</p>
+        <form id="check-form" class="inline-form">
+          <label for="check-id" class="visually-hidden">Card number</label>
+          <input type="text" id="check-id" autocomplete="off" placeholder="e.g. KR-042 or 42">
+          <button type="submit" class="btn">Check</button>
+        </form>
+        <div id="check-result" class="check-result" aria-live="polite"></div>
+        <p id="check-noset" class="small">No card set yet. <a href="./cards.html">Print cards</a> to check them here.</p>
+      </section>
+
+      <details class="card opt" id="prizes">
+        <summary>Prize order (optional): <span class="opt-state" id="prize-state"></span></summary>
+        <p class="hint">List prizes in the order you give them; the next prize shows on the draw screen.</p>
+        <ol id="prize-list" class="prize-list"></ol>
+        <form id="prize-form" class="inline-form">
+          <label for="prize-name" class="visually-hidden">Prize name</label>
+          <input type="text" id="prize-name" maxlength="40" placeholder="e.g. 1st prize: wireless earbuds">
+          <button type="submit" class="btn">Add</button>
+        </form>
+        <details class="bulk">
+          <summary>Add several (one per line)</summary>
+          <label for="prize-bulk" class="visually-hidden">Prizes, one per line</label>
+          <textarea id="prize-bulk" rows="5" placeholder="1st prize: wireless earbuds&#10;2nd prize: $30 gift card&#10;3rd prize: snack box"></textarea>
+          <button type="button" id="prize-bulk-add" class="btn">Add to list</button>
+        </details>
+      </details>
+
+      <section class="card" id="settings" aria-labelledby="settings-heading">
+        <h2 id="settings-heading">Draw settings</h2>
+        <div class="field">
+          <label for="range">Number range</label>
+          <select id="range">
+            <option value="75">1–75 (standard bingo)</option>
+            <option value="50">1–50</option>
+            <option value="90">1–90</option>
+            <option value="100">1–100</option>
+            <option value="custom">Custom (e.g. raffle tickets)</option>
+          </select>
+          <div id="custom-range" class="range-inputs" hidden>
+            <label for="min" class="visually-hidden">Lowest number</label>
+            <input type="number" id="min" inputmode="numeric" min="1" max="998" value="1">
+            <span>–</span>
+            <label for="max" class="visually-hidden">Highest number</label>
+            <input type="number" id="max" inputmode="numeric" min="2" max="999" value="75">
+          </div>
+          <p id="range-lock" class="hint" hidden>Locked during a game. Press "Start over" to change it.</p>
+        </div>
+        <div class="field">
+          <label for="per">Numbers per draw</label>
+          <select id="per">
+            <option value="1">1</option>
+            <option value="2">2 (half the time)</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="effect">Drum roll</label>
+          <select id="effect">
+            <option value="normal">Normal (about 2 s)</option>
+            <option value="short">Short (about 0.6 s)</option>
+            <option value="off">Off (show at once)</option>
+          </select>
+        </div>
+        <div class="field">
+          <label class="check-label"><input type="checkbox" id="say-letter"> Voice says the letter too ("G 52")</label>
+        </div>
+        <button type="button" id="btn-reset" class="btn btn-ghost">Start over</button>
+      </section>
+
+      <details class="card opt" id="estimate">
+        <summary>How long until the prizes run out?</summary>
+        <p class="hint">From the number of players and prizes, this runs 300 practice games and counts how many numbers it takes to get that many bingos.</p>
+        <div class="est-inputs">
+          <div class="field"><label for="est-people">Players (cards handed out)</label><input type="number" id="est-people" inputmode="numeric" min="1" max="200" value="50"></div>
+          <div class="field"><label for="est-prizes">Prizes</label><input type="number" id="est-prizes" inputmode="numeric" min="1" max="200" value="10"></div>
+          <div class="field"><label for="est-sec">Seconds per draw</label><input type="number" id="est-sec" inputmode="numeric" min="3" max="120" value="15"></div>
+        </div>
+        <button type="button" id="btn-estimate" class="btn">Estimate</button>
+        <div id="est-result" class="est-result" aria-live="polite"></div>
+      </details>
+
+    </div>
+
+    <section class="card" id="cards-link" aria-labelledby="cards-link-heading">
+      <h2 id="cards-link-heading">Bingo cards</h2>
+      <p id="cards-summary">No cards yet.</p>
+      <p><a class="btn" href="./cards.html">Print bingo cards</a></p>
+    </section>
+
+    <section class="card" id="finish" aria-labelledby="finish-heading">
+      <h2 id="finish-heading">After the game</h2>
+      <button type="button" id="btn-finish" class="btn">Show a summary</button>
+      <div id="summary" hidden>
+        <pre id="summary-text" class="summary-text"></pre>
+        <button type="button" id="btn-copy-summary" class="btn">Copy summary</button>
+        <p id="copy-msg" class="small" aria-live="polite"></p>
+      </div>
+    </section>
+
+    <details class="card opt" id="backup">
+      <summary>Saving and backup</summary>
+      <p class="hint">Drawn numbers, prizes and card settings are saved automatically in this browser only and never sent anywhere. Export and import with the buttons below.</p>
+      <button type="button" id="backup-export" class="btn">Export to file</button>
+      <button type="button" id="backup-import" class="btn">Import from file</button>
+      <input type="file" id="backup-file" accept=".json,application/json" hidden>
+      <p id="backup-msg" class="small" aria-live="polite"></p>
+    </details>
+
+    <p class="small"><a href="./guide.html">How to use, big-screen tips and FAQ</a></p>
+
+  </main>
+
+  <footer class="app-footer">
+    <nav class="footer-nav" aria-label="Footer">
+      <ul>
+        <li><a href="../../en/">yorozu-craft</a></li>
+        <li><a href="./" aria-current="page">Bingo Caller</a></li>
+        <li><a href="./cards.html">Bingo Card Generator</a></li>
+        <li><a href="./guide.html">Guide and FAQ</a></li>
+        <li><a href="../../en/about.html">About</a></li>
+        <li><a href="../../en/privacy-policy.html">Privacy policy</a></li>
+      </ul>
+    </nav>
+    <p>&copy; 2026 yorozu-craft. All rights reserved.</p>
+  </footer>
+
+  <script src="../text.js"></script>
+  <script src="../calc.js"></script>
+  <script src="../common.js"></script>
+  <script src="../main.js"></script>
+  <!-- Cloudflare Web Analytics（Cookie を使わないアクセス解析） --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "b79bf821e1fd4b6683866d493b1de426"}'></script><!-- End Cloudflare Web Analytics -->
+</body>
+</html>

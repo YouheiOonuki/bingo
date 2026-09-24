@@ -11,7 +11,7 @@
 'use strict';
 
 const CACHE_PREFIX = 'bingo-';
-const CACHE_NAME   = `${CACHE_PREFIX}v5`; // キャッシュする中身の構成を変えたら上げる
+const CACHE_NAME   = `${CACHE_PREFIX}v6`; // キャッシュする中身の構成を変えたら上げる
 
 /** 初回インストール時に取得しておくファイル */
 const PRECACHE_URLS = [
@@ -25,6 +25,11 @@ const PRECACHE_URLS = [
   './common.js',
   './main.js',
   './cards.js',
+  './screen.js',
+  './en/',
+  './en/index.html',
+  './en/cards.html',
+  './en/guide.html',
   './manifest.webmanifest',
   './favicon.svg',
   './apple-touch-icon.png',
@@ -77,6 +82,7 @@ self.addEventListener('fetch', (event) => {
 });
 
 async function networkFirst(request, fromNetwork) {
+  const url = new URL(request.url);
   try {
     const response = await Promise.race([fromNetwork, delay(NETWORK_TIMEOUT_MS)]);
     if (response) return response;
@@ -84,8 +90,10 @@ async function networkFirst(request, fromNetwork) {
     // オフライン: 下でキャッシュを探す
   }
   const cache = await caches.open(CACHE_NAME);
+  // 開いたページが無ければ抽選画面を返す（英語のページなら英語の抽選画面）
+  const home = url.pathname.startsWith(new URL('./en/', self.registration.scope).pathname) ? './en/' : './';
   const cached = request.mode === 'navigate'
-    ? (await cache.match(request, { ignoreSearch: true })) || cache.match('./')
+    ? (await cache.match(request, { ignoreSearch: true })) || cache.match(home)
     : await cache.match(request);
   return cached || fromNetwork;
 }
