@@ -93,7 +93,7 @@
       <!-- 当たりの照合 -->
       <section class="card" id="check" aria-labelledby="check-heading">
         <h2 id="check-heading">カード番号で当たりを確かめる</h2>
-        <p class="hint">このツールで印刷したカードの下の「No.」を入れると、出た数でほんとうにビンゴかを確かめます（申告ちがいを防げます）。</p>
+        <p class="hint">このツールで印刷したカードの下の「No.」を入れると、出た数でほんとうにビンゴかを確かめます。</p>
         <form id="check-form" class="inline-form">
           <label for="check-id" class="visually-hidden">カード番号</label>
           <input type="text" id="check-id" autocomplete="off" placeholder="例：KR-042 または 42">
@@ -106,7 +106,7 @@
       <!-- 景品 -->
       <section class="card" id="prizes" aria-labelledby="prizes-heading">
         <h2 id="prizes-heading">景品の順番（なくてもよい）</h2>
-        <p class="hint">渡す順に並べておくと、抽選画面に「次の景品」が出ます。当たった人（名前やカード番号）を書いておけます。</p>
+        <p class="hint">渡す順に並べておくと、抽選画面に「次の景品」が出ます。</p>
         <ol id="prize-list" class="prize-list"></ol>
         <form id="prize-form" class="inline-form">
           <label for="prize-name" class="visually-hidden">景品の名前</label>
@@ -201,14 +201,14 @@
 
     <section class="card" id="backup" aria-labelledby="backup-heading">
       <h2 id="backup-heading">保存とバックアップ</h2>
-      <p class="hint">出た数・景品・カードの設定は、この端末のブラウザに自動で保存されます（再読み込みしても続きから）。外部には送信しません。別の端末に移すときや念のための控えに、ファイルに書き出せます。</p>
+      <p class="hint">出た数・景品・カードの設定は、この端末のブラウザにだけ自動で保存され、外部には送信されません。書き出し・読み込みはこの画面のボタンから。</p>
       <button type="button" id="backup-export" class="btn">ファイルに書き出す</button>
       <button type="button" id="backup-import" class="btn">ファイルから読み込む</button>
       <input type="file" id="backup-file" accept=".json,application/json" hidden>
       <p id="backup-msg" class="small" aria-live="polite"></p>
     </section>
 
-    <p class="small"><a href="./guide.html">使い方・大画面のコツ・よくある質問・ご利用上の注意</a></p>
+    <p class="small"><a href="./guide.html">使い方・大画面のコツ・よくある質問</a></p>
 
   </main>
 
