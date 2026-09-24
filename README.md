@@ -1,83 +1,59 @@
-# __TITLE__
+# 大人数ビンゴ抽選
 
-公開 URL: **https://yorozu-craft.com/__REPO__/**
+公開 URL: **https://yorozu-craft.com/bingo/**
 
-__DESCRIPTION__
-yorozu-craft のツールの1つです（共通ルールは [youheioonuki.github.io の README](https://github.com/YouheiOonuki/youheioonuki.github.io) を参照）。
-
-<!-- TEMPLATE-BEGIN -->
-## テンプレートの使い方（`tools/init.mjs` を実行すると、この節は消えます）
-
-yorozu-craft の新しいツールの雛形です。サイト共通の決まり（youheioonuki.github.io の README「ツールを追加するとき」）のうち、ファイルで守れるものは最初から入れてあります。
-
-1. GitHub で「Use this template」→ リポジトリ名は短いローマ字＋種類（例: `loan-sim`）。URL になる
-2. クローンして、初期化スクリプトを 1 回だけ実行する（Node 20 以上）
-
-   ```sh
-   node tools/init.mjs loan-sim "住宅ローン 返済シミュレーター" "毎月の返済額と総返済額をすぐ計算。" --pwa
-   ```
-
-   - `__REPO__`・`__TITLE__`・`__DESCRIPTION__`・日付を置き換える
-   - `--pwa` を付けないと、オフライン対応の部分（`sw.js`・`manifest.webmanifest`・`PWA-BEGIN`〜`PWA-END`）を消す
-   - README のこの節と `tools/init.mjs` 自身を消す
-3. `node --test tests/*.test.js` が通ることを確かめてからコミット
-4. 残りは youheioonuki.github.io の README「ツールを追加するとき」の手順どおり（Pages の公開と Enforce HTTPS、トップの一覧・robots.txt・URL 表への追加など）
-
-最初から入っているもの:
-
-| 決まり | 入っている場所 |
-|-------|---------------|
-| canonical・OGP・AdSense・Cloudflare ビーコン | `index.html`・`guide.html` の `<head>` と `</body>` 直前 |
-| 共通ページへの相対リンク（`../about.html`・`../privacy-policy.html`） | 各ページのフッター |
-| ツール配下の 404 | `404.html`（youheioonuki.github.io のものと同じ） |
-| 保存キーの接頭辞 `<リポジトリ名>_`・try/catch | `main.js` の `store` |
-| 共有 URL は `#s=` | `main.js` の `toShareHash` / `fromShareHash` |
-| 保存内容を JSON ファイルに書き出し・読み込み（`{tool, version, exportedAt, data}`。読み込み時は `tool` を確かめ、正規化してから確認のうえ上書き） | `calc.js` の `backupFileName` / `buildBackup` / `parseBackup`、`main.js` の書き出し・読み込み、`index.html` のボタン、`tests/backup.test.js` |
-| SW のキャッシュ名の接頭辞・自分のパスだけ扱う・`./sw.js` で登録 | `sw.js`・`main.js` |
-| manifest の `id` は `/<リポジトリ名>/` | `manifest.webmanifest` |
-| 使い方ページは `guide.html`（注意・データの扱い・根拠と確認日・更新履歴の節つき） | `guide.html` |
-| 要望・不具合の報告フォーム（全ツール共通の Google フォーム。リポジトリ名が入った状態で開く） | `guide.html` の「ご利用上の注意・データの扱い」 |
-| 時点のある値は値・出典・確認日をセットで 1 か所に | `constants.js`（テストで出典と確認日の書き忘れを検出） |
-| 計算は画面から切り離した純粋関数＋テスト | `calc.js`・`tests/`・`.github/workflows/test.yml` |
-| 端末のフォント・ダークモード | `style.css` |
-| MIT ライセンス | `LICENSE` |
-
-差し替えが必要なもの: `favicon.svg`・`apple-touch-icon.png`（180×180）・`og-image.png`（1200×630）は仮の絵なので、ツールに合わせて作り直す。
-<!-- TEMPLATE-END -->
+登録なし・無料のビンゴ抽選アプリ。大画面・効果音・読み上げ、ビンゴカード印刷（最大 200 枚）とカード番号での当たり照合。忘年会・新年会の幹事向け。オフラインでも動く。
+yorozu-craft のツールの1つです（共通ルールは [youheioonuki.github.io の README](https://github.com/YouheiOonuki/youheioonuki.github.io) を参照）。企画書は yorozu-plans の `docs/12_ビンゴ.md`。
 
 ## 機能
 
-- （できることを箇条書きで）
-- 入力内容はこの端末のブラウザにだけ保存し、外部には送信しない
+- 抽選: 1〜75（ほか 1〜50・90・100、自分で決める範囲 最大 999）。重ならない。ドラムロールの演出（ふつう・短く・なし、途中で押すとすぐ出る）、Web Audio の効果音、speechSynthesis の読み上げ、B・I・N・G・O の出た数の一覧、1 つ取り消す、1 回に 2〜5 個引く（時間短縮）、全画面（プロジェクター用）、キーボード（Space・Enter で引く、F 全画面、M 効果音、V 読み上げ）
+- 数は演出の前に決めて保存する。再読み込み・ブラウザを閉じても続きから
+- ビンゴカード印刷（`cards.html`）: 1〜200 枚、A4 に 4 枚か 2 枚、中央 FREE、見出し、カード番号 `No.KR-042`（頭 2 文字はカードの組の目印）、クレジット `yorozu-craft.com/bingo/print/ で作成`（既定オン・外せる）
+- 照合: カード番号を入れると、出た数でビンゴか・何個目の数でそろったか・リーチの数を出す。「この人に次の景品を渡す」。抽選画面にカードの組のビンゴ・リーチの枚数
+- 景品の順番（次の景品を抽選画面に出す・当たった人を記入）
+- 時間の目安: 人数と景品の数から、景品の数だけビンゴが出るまでに引く数を 300 回の試行で数え、1 回に 1〜3 個ずつの回数と時間を出す
+- 共有リンク `cards.html#s=`: カードの設定（組の番号・枚数・範囲・1 ページの枚数・見出し）だけ。出た数は入れない。受け取った側は「この設定を保存する」まで自分の設定を上書きしない
+- 保存: `bingo_game`・`bingo_cards`・`bingo_prizes`・`bingo_settings`（localStorage）。ファイルへの書き出し・読み込み（`bingo-backup-YYYYMMDD.json`、決定 D31）
+- オフライン（PWA）: `sw.js`（キャッシュ名 `bingo-v1`、自分のパスだけ扱う）、`manifest.webmanifest`（`id: /bingo/`）
+- 結果のまとめ（コピー）と、その下にだけほかのツールへの 2 行（傾斜割り勘・ルーレット。README ルール 21）
+- 広告: 抽選画面（`index.html`）はプロジェクターに全画面で映して操作するので **AdSense は meta だけ**（ルール 5 の全画面の例外。サイト横断チェックの `META_ONLY_PAGES` に `/bingo/` を足す必要がある）。カード印刷・使い方・着地ページは meta＋スクリプト。印刷には広告を出さない
 
-## 計算の仕様・根拠
+## 仕様
 
-（計算式、使っている値と出典。値は `constants.js` にまとめ、画面の「根拠と確認日」にも出す）
+- カード: `seed`（6 文字。0・1・I・O を使わない 32 文字）と範囲と何枚目かから、mulberry32 で各列（範囲を 5 等分、75 なら B1-15 …）から 5 個ずつ選ぶ。組の中で同じカードが出たらそのカードだけ作り直す。枚数を増やしても前のカードは変わらない
+- 組の目印: `seed` と範囲のハッシュから英字 2 文字（I・O を除く 24 文字）。別の組のカード番号を入れると知らせる
+- 抽選の乱数: `crypto.getRandomValues`（まだ出ていない数から等確率）
+- 画面に JS から出す文はすべて `text.js`（`TEXT`）に集め、読み上げの言語（`speech.lang`）・列の文字の読み・数の言い方もそこに持つ。英語版は `TEXTS` に言語を足して `<html lang>` で選ぶ形にできる（テストで JS に日本語の文字列が無いことを確かめている）
 
 ## 保守
 
 | 時期 | 確認すること | 直す場所 |
 |------|------------|---------|
-| （例: 毎年4月ごろ） | （例: 料率の改定） | `constants.js`、`guide.html` の最終確認日 |
+| 毎年 11 月初め（忘年会の前） | 読み上げ・全画面・印刷が主要ブラウザで動くか | — |
+| ファイルを足したとき | `sw.js` の `PRECACHE_URLS` とキャッシュの版 | `sw.js` |
 
-値や計算を直したら、`guide.html` の「更新履歴」に日付と内容を 1 行足す。
+直したら、`guide.html` の「更新履歴」に日付と内容を 1 行足す。
 
 ## ファイル
 
 | ファイル | 役割 |
 |---------|------|
-| `index.html` | ツール本体 |
-| `guide.html` | 使い方・根拠と確認日・よくある質問・ご利用上の注意・更新履歴 |
-| `calc.js` | 計算ロジック（画面から切り離した純粋関数） |
-| `constants.js` | 時点のある値（値・出典・確認日） |
-| `main.js` | 画面の制御・保存・共有リンク |
-| `style.css` | 見た目（和紙風の配色、ダークモード対応） |
-| `sw.js` / `manifest.webmanifest` | オフライン対応（使う場合のみ） |
+| `index.html` | 抽選（本体）・照合・景品・設定・時間の目安・まとめ |
+| `cards.html` | ビンゴカードの作成と印刷・共有リンク |
+| `guide.html` | 使い方・大画面のコツ・カードの印刷と照合・早く終わらせるコツ・よくある質問（FAQPage）・しくみ・ご利用上の注意・更新履歴 |
+| `print/index.html` | 印刷したカードのクレジットから来た人の着地ページ（noindex、sitemap に載せない） |
+| `calc.js` | ロジック（純粋関数）: 乱数・カード・カード番号・判定・抽選・取り消し・時間の目安・正規化・共有・バックアップ |
+| `text.js` | 画面に JS から出す文と読み上げ |
+| `common.js` | 保存・バックアップ・コピー・乱数・Service Worker の登録（2 ページ共通） |
+| `main.js` / `cards.js` | 抽選ページ / カードページの制御 |
+| `style.css` | 見た目（和紙風の配色、ダークモード、全画面、印刷） |
+| `sw.js` / `manifest.webmanifest` / `icon-192.png` / `icon-512.png` | オフライン対応 |
 | `404.html` | ツール配下の存在しない URL で出るページ（サイト共通のもの） |
 | `favicon.svg` / `apple-touch-icon.png` / `og-image.png` | アイコン / ホーム画面用アイコン / SNS 共有用画像（1200×630） |
-| `sitemap.xml` | サイトマップ（robots.txt はドメイン直下で管理） |
+| `sitemap.xml` | サイトマップ（`/`・`cards.html`・`guide.html`） |
 | `tests/*.test.js` | テスト（`node --test tests/*.test.js`。`.github/workflows/test.yml` で push・PR のたびに自動実行） |
 
 ## ライセンス
 
-MIT License（`LICENSE`）。
+MIT License（`LICENSE`）。第三者のデータ・ライブラリ・音声ファイルは使っていない。

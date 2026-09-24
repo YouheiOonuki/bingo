@@ -4,9 +4,9 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const { backupFileName, buildBackup, parseBackup } = require('../calc.js');
 
-const TOOL = '__REPO__';
-const DATA = { draft: { amount: '1234' } };
-const REQUIRED = ['draft'];
+const TOOL = 'bingo';
+const DATA = { game: { min: 1, max: 75, per: 1, drawn: [3, 70] }, cards: { seed: 'ABCDEF' }, prizes: [], settings: {} };
+const REQUIRED = ['game'];
 
 test('backupFileName: <ツール名>-backup-YYYYMMDD.json（端末の日付）', () => {
   assert.equal(backupFileName(TOOL, new Date(2026, 8, 24, 23, 59)), TOOL + '-backup-20260924.json');
@@ -31,14 +31,15 @@ test('parseBackup: 書き出したファイルはそのまま読める', () => {
 test('parseBackup: ほかのツールのファイルは断る', () => {
   const r = parseBackup(JSON.stringify(buildBackup('other-tool', DATA)), TOOL, REQUIRED);
   assert.equal(r.ok, false);
-  assert.match(r.error, /ほかのツール（other-tool）/);
+  assert.equal(r.code, 'otherTool');
+  assert.equal(r.tool, 'other-tool');
 });
 
 test('parseBackup: 壊れた JSON・JSON でないものは断る', () => {
   for (const text of ['{"tool": "' + TOOL, '', 'こんにちは', 'null', '[]', '123']) {
     const r = parseBackup(text, TOOL, REQUIRED);
     assert.equal(r.ok, false, text);
-    assert.match(r.error, /読み取れませんでした/);
+    assert.equal(r.code, 'unreadable');
   }
 });
 
@@ -60,12 +61,12 @@ test('parseBackup: 項目が欠けている・形が違うものは断る', () =
   cases.forEach((c, i) => {
     const r = parseBackup(JSON.stringify(c), TOOL, REQUIRED);
     assert.equal(r.ok, false, 'case ' + i);
-    assert.ok(typeof r.error === 'string' && r.error.length > 0);
+    assert.ok(['unreadable', 'format', 'missing'].includes(r.code), r.code);
   });
 });
 
 test('parseBackup: 新しい版の形式は、その旨を伝えて断る', () => {
   const r = parseBackup(JSON.stringify(Object.assign(buildBackup(TOOL, DATA), { version: 2 })), TOOL, REQUIRED);
   assert.equal(r.ok, false);
-  assert.match(r.error, /新しい版/);
+  assert.equal(r.code, 'newer');
 });

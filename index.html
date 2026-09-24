@@ -3,18 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>__TITLE__｜yorozu-craft</title>
-  <meta name="description" content="__DESCRIPTION__">
+  <title>大人数ビンゴ抽選（無料・登録なし・カード印刷つき）｜yorozu-craft</title>
+  <meta name="description" content="登録なし・無料のビンゴ抽選アプリ。大画面・効果音・読み上げ、ビンゴカード印刷（最大200枚）とカード番号での当たり照合。忘年会・新年会の幹事に。オフラインでも使えます。">
   <meta name="robots" content="index, follow">
-  <link rel="canonical" href="https://yorozu-craft.com/__REPO__/">
+  <link rel="canonical" href="https://yorozu-craft.com/bingo/">
 
-  <meta property="og:title" content="__TITLE__｜yorozu-craft">
-  <meta property="og:description" content="__DESCRIPTION__">
+  <meta property="og:title" content="大人数ビンゴ抽選｜yorozu-craft">
+  <meta property="og:description" content="登録なし・無料のビンゴ抽選アプリ。大画面・効果音・読み上げ、ビンゴカード印刷（最大200枚）とカード番号での当たり照合。忘年会・新年会の幹事に。">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://yorozu-craft.com/__REPO__/">
+  <meta property="og:url" content="https://yorozu-craft.com/bingo/">
   <meta property="og:site_name" content="yorozu-craft">
   <meta property="og:locale" content="ja_JP">
-  <meta property="og:image" content="https://yorozu-craft.com/__REPO__/og-image.png">
+  <meta property="og:image" content="https://yorozu-craft.com/bingo/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta name="twitter:card" content="summary_large_image">
@@ -25,9 +25,9 @@
   {
     "@context": "https://schema.org",
     "@type": "WebApplication",
-    "name": "__TITLE__",
-    "description": "__DESCRIPTION__",
-    "url": "https://yorozu-craft.com/__REPO__/",
+    "name": "大人数ビンゴ抽選",
+    "description": "登録なし・無料のビンゴ抽選アプリ。大画面・効果音・読み上げ、ビンゴカード印刷（最大200枚）とカード番号での当たり照合。忘年会・新年会の幹事に。オフラインでも使えます。",
+    "url": "https://yorozu-craft.com/bingo/",
     "applicationCategory": "UtilitiesApplication",
     "operatingSystem": "All",
     "offers": { "@type": "Offer", "price": "0", "priceCurrency": "JPY" },
@@ -35,45 +35,180 @@
   }
   </script>
 
-  <!-- Google AdSense（サイト所有確認 + 広告配信スクリプト）。全画面で操作する画面なら script を消して meta だけ残す -->
+  <!-- Google AdSense: 抽選画面はプロジェクターに全画面で映して操作するので、自動広告がボタンや数字を隠さないよう meta だけ（README「ツールを追加するとき」5。広告はカード印刷・使い方のページで出す） -->
   <meta name="google-adsense-account" content="ca-pub-5375267956079717">
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5375267956079717"
-     crossorigin="anonymous"></script>
 
   <link rel="icon" href="./favicon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="./apple-touch-icon.png">
-  <!-- PWA-BEGIN -->
   <link rel="manifest" href="./manifest.webmanifest">
-  <!-- PWA-END -->
   <link rel="stylesheet" href="./style.css">
 </head>
 <body>
 
   <header class="app-header">
-    <h1>__TITLE__</h1>
-    <p class="subtitle">__DESCRIPTION__</p>
+    <h1>大人数ビンゴ抽選</h1>
+    <p class="subtitle">登録なし・無料。大画面・読み上げ・カード印刷と当たり照合。オフラインでも使えます。</p>
   </header>
 
-  <main class="app-main">
+  <main class="app-main wide">
 
-    <!-- ここにツール本体を書く（例: 金額を 100 円単位で切り上げる） -->
-    <section class="card" aria-labelledby="tool-heading">
-      <h2 id="tool-heading">計算</h2>
-      <div class="field">
-        <label for="amount">金額</label>
-        <p class="hint">入力内容はこの端末のブラウザにだけ保存され、外部には送信されません。</p>
-        <input type="number" id="amount" inputmode="numeric" placeholder="例：1234">
+    <!-- 抽選（全画面にする部分） -->
+    <section id="stage" class="card stage" aria-labelledby="stage-heading">
+      <div class="stage-bar">
+        <h2 id="stage-heading" class="stage-title">抽選</h2>
+        <p id="stage-count" class="stage-count">0 個目・残り 75</p>
+        <div class="stage-tools">
+          <button type="button" id="btn-sound" class="icon-btn" aria-pressed="true" title="効果音（M）">効果音</button>
+          <button type="button" id="btn-voice" class="icon-btn" aria-pressed="false" title="読み上げ（V）">読み上げ</button>
+          <button type="button" id="btn-full" class="icon-btn" title="全画面（F）">全画面</button>
+        </div>
       </div>
-      <p>結果：<strong id="result" aria-live="polite">—</strong></p>
-      <button type="button" id="share" class="btn">結果を開くリンクをコピー</button>
-      <!-- 保存内容のファイルへの書き出し・読み込み（README「ツールを追加するとき」20。保存する・共有するボタンの近くに置く） -->
+
+      <div class="stage-body">
+        <div class="ball-area">
+          <div id="ball" class="ball" aria-hidden="true"><span id="ball-letter" class="ball-letter"></span><span id="ball-num" class="ball-num">?</span></div>
+          <p id="batch" class="batch" hidden></p>
+          <p id="announce" class="visually-hidden" aria-live="assertive"></p>
+          <div class="draw-row">
+            <button type="button" id="btn-draw" class="btn btn-draw">数字を引く</button>
+          </div>
+          <p class="draw-hint">スペースキー・Enter でも引けます</p>
+          <div class="sub-row">
+            <button type="button" id="btn-undo" class="btn btn-ghost">1 つ取り消す</button>
+            <span id="next-prize" class="next-prize" hidden></span>
+          </div>
+          <p id="set-status" class="set-status" hidden></p>
+        </div>
+
+        <div class="history-area">
+          <h3 class="history-title">出た数</h3>
+          <p id="recent" class="recent"></p>
+          <div id="board" class="board"></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="grid-2">
+
+      <!-- 当たりの照合 -->
+      <section class="card" id="check" aria-labelledby="check-heading">
+        <h2 id="check-heading">カード番号で当たりを確かめる</h2>
+        <p class="hint">このツールで印刷したカードの下の「No.」を入れると、出た数でほんとうにビンゴかを確かめます（申告ちがいを防げます）。</p>
+        <form id="check-form" class="inline-form">
+          <label for="check-id" class="visually-hidden">カード番号</label>
+          <input type="text" id="check-id" autocomplete="off" placeholder="例：KR-042 または 42">
+          <button type="submit" class="btn">確かめる</button>
+        </form>
+        <div id="check-result" class="check-result" aria-live="polite"></div>
+        <p id="check-noset" class="small">カードの組がまだありません。<a href="./cards.html">カードを印刷する</a>と、ここで照合できます。</p>
+      </section>
+
+      <!-- 景品 -->
+      <section class="card" id="prizes" aria-labelledby="prizes-heading">
+        <h2 id="prizes-heading">景品の順番（なくてもよい）</h2>
+        <p class="hint">渡す順に並べておくと、抽選画面に「次の景品」が出ます。当たった人（名前やカード番号）を書いておけます。</p>
+        <ol id="prize-list" class="prize-list"></ol>
+        <form id="prize-form" class="inline-form">
+          <label for="prize-name" class="visually-hidden">景品の名前</label>
+          <input type="text" id="prize-name" maxlength="40" placeholder="例：1等 ワイヤレスイヤホン">
+          <button type="submit" class="btn">足す</button>
+        </form>
+        <details class="bulk">
+          <summary>まとめて入れる（1 行に 1 つ）</summary>
+          <label for="prize-bulk" class="visually-hidden">景品を 1 行に 1 つ</label>
+          <textarea id="prize-bulk" rows="5" placeholder="1等 ワイヤレスイヤホン&#10;2等 ギフト券 3,000円&#10;3等 お菓子セット"></textarea>
+          <button type="button" id="prize-bulk-add" class="btn">下に足す</button>
+        </details>
+      </section>
+
+      <!-- 設定 -->
+      <section class="card" id="settings" aria-labelledby="settings-heading">
+        <h2 id="settings-heading">抽選の設定</h2>
+        <div class="field">
+          <label for="range">数の範囲</label>
+          <select id="range">
+            <option value="75">1〜75（ふつうのビンゴ）</option>
+            <option value="50">1〜50</option>
+            <option value="90">1〜90</option>
+            <option value="100">1〜100</option>
+            <option value="custom">自分で決める（番号札の抽選など）</option>
+          </select>
+          <div id="custom-range" class="range-inputs" hidden>
+            <label for="min" class="visually-hidden">いちばん小さい数</label>
+            <input type="number" id="min" inputmode="numeric" min="1" max="998" value="1">
+            <span>〜</span>
+            <label for="max" class="visually-hidden">いちばん大きい数</label>
+            <input type="number" id="max" inputmode="numeric" min="2" max="999" value="75">
+          </div>
+          <p id="range-lock" class="hint" hidden>抽選の途中は変えられません。変えるときは「はじめからにする」を押してください。</p>
+        </div>
+        <div class="field">
+          <label for="per">1 回に引く数</label>
+          <select id="per">
+            <option value="1">1 個</option>
+            <option value="2">2 個（時間を半分に）</option>
+            <option value="3">3 個</option>
+            <option value="4">4 個</option>
+            <option value="5">5 個</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="effect">演出（ドラムロール）</label>
+          <select id="effect">
+            <option value="normal">ふつう（約 2 秒）</option>
+            <option value="short">短く（約 0.6 秒）</option>
+            <option value="off">なし（すぐ出す）</option>
+          </select>
+        </div>
+        <button type="button" id="btn-reset" class="btn btn-ghost">はじめからにする</button>
+      </section>
+
+      <!-- 時間の目安 -->
+      <section class="card" id="estimate" aria-labelledby="estimate-heading">
+        <h2 id="estimate-heading">景品がなくなるまでの時間の目安</h2>
+        <p class="hint">人数と景品の数から、景品の数だけビンゴが出るまでに数をいくつ引くかを、ためしに 300 回抽選して数えます。</p>
+        <div class="est-inputs">
+          <div class="field"><label for="est-people">参加人数（配るカード）</label><input type="number" id="est-people" inputmode="numeric" min="1" max="200" value="50"></div>
+          <div class="field"><label for="est-prizes">景品の数</label><input type="number" id="est-prizes" inputmode="numeric" min="1" max="200" value="10"></div>
+          <div class="field"><label for="est-sec">1 回にかかる秒数</label><input type="number" id="est-sec" inputmode="numeric" min="3" max="120" value="15"></div>
+        </div>
+        <button type="button" id="btn-estimate" class="btn">目安を出す</button>
+        <div id="est-result" class="est-result" aria-live="polite"></div>
+      </section>
+
+    </div>
+
+    <section class="card" id="cards-link" aria-labelledby="cards-link-heading">
+      <h2 id="cards-link-heading">ビンゴカード</h2>
+      <p id="cards-summary">カードはまだ作っていません。</p>
+      <p><a class="btn" href="./cards.html">ビンゴカードを作って印刷する（無料・最大 200 枚）</a></p>
+    </section>
+
+    <!-- 終わったら（結果のまとめ。ほかのツールへの導線はここだけ。README「ツールを追加するとき」21） -->
+    <section class="card" id="finish" aria-labelledby="finish-heading">
+      <h2 id="finish-heading">ビンゴが終わったら</h2>
+      <button type="button" id="btn-finish" class="btn">結果のまとめを出す</button>
+      <div id="summary" hidden>
+        <pre id="summary-text" class="summary-text"></pre>
+        <button type="button" id="btn-copy-summary" class="btn">まとめをコピー</button>
+        <p id="copy-msg" class="small" aria-live="polite"></p>
+        <ul class="next-links">
+          <li>会費の清算は → <a href="../easy-split/">傾斜割り勘（幹事 0 円・2 次会の合算も）</a></li>
+          <li>次の順番決めや罰ゲームは → <a href="../web-roulette/">ルーレット</a></li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="card" id="backup" aria-labelledby="backup-heading">
+      <h2 id="backup-heading">保存とバックアップ</h2>
+      <p class="hint">出た数・景品・カードの設定は、この端末のブラウザに自動で保存されます（再読み込みしても続きから）。外部には送信しません。別の端末に移すときや念のための控えに、ファイルに書き出せます。</p>
       <button type="button" id="backup-export" class="btn">ファイルに書き出す</button>
       <button type="button" id="backup-import" class="btn">ファイルから読み込む</button>
       <input type="file" id="backup-file" accept=".json,application/json" hidden>
       <p id="backup-msg" class="small" aria-live="polite"></p>
     </section>
 
-    <p class="small"><a href="./guide.html">使い方・よくある質問・ご利用上の注意</a></p>
+    <p class="small"><a href="./guide.html">使い方・大画面のコツ・よくある質問・ご利用上の注意</a></p>
 
   </main>
 
@@ -81,7 +216,8 @@
     <nav class="footer-nav" aria-label="フッターナビゲーション">
       <ul>
         <li><a href="../">yorozu-craft トップ</a></li>
-        <li><a href="./" aria-current="page">__TITLE__</a></li>
+        <li><a href="./" aria-current="page">大人数ビンゴ抽選</a></li>
+        <li><a href="./cards.html">カード印刷</a></li>
         <li><a href="./guide.html">使い方・よくある質問</a></li>
         <li><a href="../about.html">運営者情報</a></li>
         <li><a href="../privacy-policy.html">プライバシーポリシー</a></li>
@@ -90,8 +226,9 @@
     <p>&copy; 2026 yorozu-craft. All rights reserved.</p>
   </footer>
 
-  <script src="./constants.js"></script>
+  <script src="./text.js"></script>
   <script src="./calc.js"></script>
+  <script src="./common.js"></script>
   <script src="./main.js"></script>
   <!-- Cloudflare Web Analytics（Cookie を使わないアクセス解析） --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "b79bf821e1fd4b6683866d493b1de426"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
