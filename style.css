@@ -325,3 +325,9 @@ body.is-max .stage.is-full { position: fixed; inset: 0; z-index: 100; }
   .sheets .sheet { zoom: 1; margin: 0; box-shadow: none; height: 296.6mm; break-after: page; page-break-after: always; }
   .sheets .sheet:last-child { break-after: auto; page-break-after: auto; }
 }
+
+/* 使い方ページの折りたたみ（WRITING.md の基準で、補足・一覧はここに入れる） */
+.content details { margin: 0.4rem 0; }
+.content summary { cursor: pointer; color: var(--accent); font-size: 0.88rem; }
+.content details[open] summary { margin-bottom: 0.3rem; }
+.content h4 { font-size: 0.9rem; margin: 0.8rem 0 0.2rem; }

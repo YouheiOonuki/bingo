@@ -81,7 +81,7 @@
       <div class="field">
         <p class="label-like">カードの組の番号</p>
         <p><strong id="c-seed" class="seed">------</strong> <span id="c-tag" class="small"></span></p>
-        <p class="hint">同じ番号・同じ範囲なら、どの端末でも同じカードになります。カードの No. の頭の 2 文字で、どの組のカードかが分かります。</p>
+        <p class="hint">同じ番号・同じ範囲なら、どの端末でも同じカードになります。</p>
         <button type="button" id="btn-new-seed" class="btn btn-ghost">別のカードの組にする</button>
         <details class="bulk">
           <summary>番号を入れて同じカードを作る</summary>
@@ -101,7 +101,7 @@
       <button type="button" id="btn-print" class="btn">印刷する</button>
       <button type="button" id="btn-share" class="btn btn-ghost">同じカードを開くリンクをコピー</button>
       <p id="share-msg" class="small" aria-live="polite"></p>
-      <p class="hint">A4 縦・倍率 100%（「用紙に合わせる」でも可）で印刷してください。点線で切り分けます。リンクには出た数は入りません（カードの設定だけ）。</p>
+      <p class="hint">A4 縦・倍率 100%（「用紙に合わせる」でも可）で印刷してください。リンクには出た数は入りません（カードの設定だけ）。</p>
       <p class="small"><a href="./">抽選画面へ（カード番号で当たりを照合）</a></p>
     </section>
 
@@ -109,7 +109,7 @@
 
     <section class="card" aria-labelledby="backup-heading">
       <h2 id="backup-heading">保存とバックアップ</h2>
-      <p class="hint">カードの設定は、この端末のブラウザに自動で保存されます（外部には送信しません）。抽選・景品とまとめてファイルに書き出せます。</p>
+      <p class="hint">カードの設定は、この端末のブラウザにだけ自動で保存され、外部には送信されません。書き出し・読み込みはこの画面のボタンから。</p>
       <button type="button" id="backup-export" class="btn">ファイルに書き出す</button>
       <button type="button" id="backup-import" class="btn">ファイルから読み込む</button>
       <input type="file" id="backup-file" accept=".json,application/json" hidden>
