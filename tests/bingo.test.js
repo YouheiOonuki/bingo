@@ -258,8 +258,9 @@ test('正規化: カードの設定・景品・画面の設定', () => {
     [{ name: '1等', winner: 'No.AB-001' }, { name: '', winner: '' }, { name: '', winner: '' }, { name: '', winner: '' }]);
   assert.equal(C.normalizePrizes(Array(150).fill({ name: 'a' })).length, 100);
   assert.deepEqual(C.normalizePrizes('x'), []);
-  assert.deepEqual(C.normalizeSettings(undefined), { sound: true, voice: false, effect: 'normal' });
-  assert.deepEqual(C.normalizeSettings({ sound: false, voice: true, effect: 'off' }), { sound: false, voice: true, effect: 'off' });
+  assert.deepEqual(C.normalizeSettings(undefined), { sound: true, voice: false, sayLetter: false, effect: 'normal' });
+  assert.deepEqual(C.normalizeSettings({ sound: false, voice: true, effect: 'off' }), { sound: false, voice: true, sayLetter: false, effect: 'off' });
+  assert.equal(C.normalizeSettings({ sayLetter: true }).sayLetter, true);
   assert.equal(C.normalizeSettings({ effect: 'crazy' }).effect, 'normal');
 });
 

@@ -108,7 +108,7 @@
     } catch (e) { /* 読み上げできない端末では何もしない */ }
   }
   function speakNumbers(list) {
-    speak(list.map(function (n) { return T.speech.one(n, letter(n)); }).join(T.speech.join));
+    speak(list.map(function (n) { return T.speech.one(n, state.settings.sayLetter ? letter(n) : ''); }).join(T.speech.join));
   }
 
   // ---------------------------------------------------------------
@@ -388,6 +388,7 @@
     $('range-lock').hidden = !locked;
     $('per').value = String(game.per);
     $('effect').value = state.settings.effect;
+    $('say-letter').checked = state.settings.sayLetter;
   }
   function applyRange() {
     if (g().drawn.length) return;
@@ -413,6 +414,7 @@
   $('max').addEventListener('change', applyRange);
   $('per').addEventListener('change', function () { g().per = Number(this.value) || 1; save('game'); });
   $('effect').addEventListener('change', function () { state.settings.effect = this.value; save('settings'); });
+  $('say-letter').addEventListener('change', function () { state.settings.sayLetter = this.checked; save('settings'); });
   $('btn-reset').addEventListener('click', function () {
     if (!window.confirm(T.resetConfirm)) return;
     g().drawn = [];
