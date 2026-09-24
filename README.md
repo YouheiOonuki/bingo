@@ -15,7 +15,7 @@ yorozu-craft のツールの1つです（共通ルールは [youheioonuki.github
 - 時間の目安: 人数と景品の数から、景品の数だけビンゴが出るまでに引く数を 300 回の試行で数え、1 回に 1〜3 個ずつの回数と時間を出す
 - 共有リンク `cards.html#s=`: カードの設定（組の番号・枚数・範囲・1 ページの枚数・見出し）だけ。出た数は入れない。受け取った側は「この設定を保存する」まで自分の設定を上書きしない
 - 保存: `bingo_game`・`bingo_cards`・`bingo_prizes`・`bingo_settings`（localStorage）。ファイルへの書き出し・読み込み（`bingo-backup-YYYYMMDD.json`、決定 D31）
-- オフライン（PWA）: `sw.js`（キャッシュ名 `bingo-v1`、自分のパスだけ扱う）、`manifest.webmanifest`（`id: /bingo/`）
+- オフライン（PWA）: `sw.js`（キャッシュ名 `bingo-v5`、自分のパスだけ扱う）、`manifest.webmanifest`（`id: /bingo/`）
 - 結果のまとめ（コピー）と、その下にだけほかのツールへの 2 行（傾斜割り勘・ルーレット。README ルール 21）
 - 広告: 抽選画面（`index.html`）はプロジェクターに全画面で映して操作するので **AdSense は meta だけ**（ルール 5 の全画面の例外。サイト横断チェックの `META_ONLY_PAGES` に `/bingo/` を足す必要がある）。カード印刷・使い方・着地ページは meta＋スクリプト。印刷には広告を出さない
 
