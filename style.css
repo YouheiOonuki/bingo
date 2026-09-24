@@ -175,6 +175,16 @@ a { color: var(--accent); }
 .banner { background: var(--accent-soft); display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
 .banner span { flex: 1 1 18rem; font-size: 0.9rem; }
 
+/* --- 抽選とカード印刷の切り替え（両ページの main の先頭。静的な HTML なので読み込み後にずれない） --- */
+.mode-switch { display: flex; max-width: 30rem; margin: 0 auto 1rem; border: 1px solid var(--accent); border-radius: 999px; overflow: hidden; background: var(--card); }
+.mode-switch a { flex: 1 1 auto; text-align: center; white-space: nowrap; padding: 0.5rem 0.7rem; font-size: 0.9rem; font-weight: 600; color: var(--accent); text-decoration: none; }
+.mode-switch a + a { border-left: 1px solid var(--accent); }
+.mode-switch a[aria-current="page"] { background: var(--accent); color: var(--card); }
+.mode-switch a:not([aria-current]):hover { background: var(--accent-soft); }
+.mode-switch a:focus-visible { outline: 2px solid var(--accent); outline-offset: -4px; }
+.mode-switch a[aria-current="page"]:focus-visible { outline-color: var(--card); }
+body.is-max .mode-switch { display: none; }
+
 /* --- 抽選 --- */
 .stage { padding: 0.9rem; }
 .stage-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 0.3rem 0.8rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; margin-bottom: 0.6rem; }
@@ -293,6 +303,8 @@ body.is-max .stage.is-full { position: fixed; inset: 0; z-index: 100; }
 .next-links li { margin: 0.2rem 0; }
 
 /* --- カード（印刷） --- */
+#sheet-info { min-height: 1.7em; }  /* 枚数とページ数は JS で入る。1 行分を先に確保（印刷ボタンが下にずれないように） */
+#c-tag { margin-left: 0.4em; }  /* 空白の文字を置かない（JS で文字が入ったときに空白がずれて CLS に数えられる） */
 .sheets { --z: 0.45; margin: 0.6rem 0 1rem; overflow-x: auto; }
 .sheet {
   zoom: var(--z); width: 210mm; height: 297mm; margin: 0 auto 24px; background: #fff; color: #111;
@@ -319,7 +331,7 @@ body.is-max .stage.is-full { position: fixed; inset: 0; z-index: 100; }
 @page { size: A4 portrait; margin: 0; }
 @media print {
   body { background: #fff; }
-  .app-header, .app-footer, .app-main > :not(.sheets), ins.adsbygoogle, .adsbygoogle, iframe { display: none !important; }
+  .app-header, .app-footer, .mode-switch, .app-main > :not(.sheets), ins.adsbygoogle, .adsbygoogle, iframe { display: none !important; }
   .app-main { max-width: none; padding: 0; margin: 0; }
   .sheets { margin: 0; overflow: visible; }
   .sheets .sheet { zoom: 1; margin: 0; box-shadow: none; height: 296.6mm; break-after: page; page-break-after: always; }

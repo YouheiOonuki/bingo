@@ -52,6 +52,12 @@
 
   <main class="app-main wide">
 
+    <!-- 抽選とカード印刷の切り替え（カード印刷は別ページ。全画面・印刷では出さない） -->
+    <nav class="mode-switch" aria-label="ビンゴのページ">
+      <a href="./" aria-current="page">抽選する</a>
+      <a href="./cards.html">カードを作って印刷する</a>
+    </nav>
+
     <!-- 抽選（全画面にする部分） -->
     <section id="stage" class="card stage" aria-labelledby="stage-heading">
       <div class="stage-bar">
@@ -93,7 +99,7 @@
       <!-- 当たりの照合 -->
       <section class="card" id="check" aria-labelledby="check-heading">
         <h2 id="check-heading">カード番号で当たりを確かめる</h2>
-        <p class="hint">このツールで印刷したカードの下の「No.」を入れると、出た数でほんとうにビンゴかを確かめます。</p>
+        <p class="hint">このツールで印刷したカードの下の「No.」を入れると、出た数でビンゴかを確かめます。</p>
         <form id="check-form" class="inline-form">
           <label for="check-id" class="visually-hidden">カード番号</label>
           <input type="text" id="check-id" autocomplete="off" placeholder="例：KR-042 または 42">
@@ -181,7 +187,7 @@
     <section class="card" id="cards-link" aria-labelledby="cards-link-heading">
       <h2 id="cards-link-heading">ビンゴカード</h2>
       <p id="cards-summary">カードはまだ作っていません。</p>
-      <p><a class="btn" href="./cards.html">ビンゴカードを作って印刷する（無料・最大 200 枚）</a></p>
+      <p><a class="btn" href="./cards.html">カードを作って印刷する</a></p>
     </section>
 
     <!-- 終わったら（結果のまとめ。ほかのツールへの導線はここだけ。README「ツールを追加するとき」21） -->
