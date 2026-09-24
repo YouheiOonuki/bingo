@@ -345,12 +345,13 @@
     });
   }
 
-  /** 画面の設定 {sound, voice, effect} */
+  /** 画面の設定 {sound, voice, sayLetter（読み上げで列の文字も言う。既定は数字だけ）, effect} */
   function normalizeSettings(s) {
     s = obj(s);
     return {
       sound: s.sound !== false,
       voice: s.voice === true,
+      sayLetter: s.sayLetter === true,
       effect: ['normal', 'short', 'off'].indexOf(s.effect) >= 0 ? s.effect : 'normal',
     };
   }
