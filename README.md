@@ -51,7 +51,7 @@ yorozu-craft のツールの1つです（共通ルールは [youheioonuki.github
 | `text.js` | 画面に JS から出す文と読み上げ |
 | `common.js` | 保存・バックアップ・コピー・乱数・Service Worker の登録（2 ページ共通） |
 | `main.js` / `cards.js` | 抽選ページ / カードページの制御 |
-| `style.css` | 見た目（和紙風の配色、ダークモード、全画面、印刷） |
+| `style.css` | 見た目（和紙風の配色、ダークモード、全画面、印刷）。先頭の `yorozu-common:begin`〜`end` はサイト共通の部品とトークン（手で直さない。正本は youheioonuki.github.io の `tools/common/yorozu-common.css`、`tools/sync-common.mjs` で配る） |
 | `sw.js` / `manifest.webmanifest` / `icon-192.png` / `icon-512.png` | オフライン対応 |
 | `404.html` | ツール配下の存在しない URL で出るページ（サイト共通のもの） |
 | `favicon.svg` / `apple-touch-icon.png` / `og-image.png` | アイコン / ホーム画面用アイコン / SNS 共有用画像（1200×630） |
