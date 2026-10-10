@@ -17,6 +17,7 @@ try {
   const host = await hostCtx.newPage();
   host.on('dialog', (d) => d.accept());
   await host.goto(BASE);
+  await host.click('#room > summary'); // 「みんなで」は折りたたみの中
   await host.click('#room-create');
   await host.waitForSelector('#room-on:not([hidden])', { timeout: 10000 });
   const code = (await host.textContent('#room-code')).trim();

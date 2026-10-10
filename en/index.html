@@ -100,9 +100,9 @@
     </section>
 
     <!-- Play together (yorozu-plans ROADMAP 7.36.2 K146) -->
-    <section class="card" id="room" aria-labelledby="room-heading">
-      <h2 id="room-heading">Play together (same numbers on players' phones)</h2>
-      <p class="hint">Open a room and players join from their phones with the QR code or the room code. Each phone makes its own card, shows the numbers as you call them, and tells the player about reach and bingo. No names are sent. The room keeps only the called numbers and the bingo count, and is deleted after 3 hours.</p>
+    <details class="card opt" id="room">
+      <summary>Play together (same numbers on players' phones)</summary>
+      <p class="hint">Players join with the QR code or the room code. Each phone makes its own card and tells the player about reach and bingo. No names are sent. The room keeps only the called numbers and the bingo count, and is deleted after 3 hours.</p>
       <div id="room-off">
         <button type="button" id="room-create" class="btn">Open a room</button>
       </div>
@@ -117,7 +117,7 @@
         </div>
       </div>
       <p id="room-msg" class="small" aria-live="polite"></p>
-    </section>
+    </details>
 
     <div class="grid-2">
 

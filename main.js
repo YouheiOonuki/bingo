@@ -692,6 +692,7 @@
     $('room-on').hidden = !on;
     $('room-badge').hidden = !on;
     if (!on) return;
+    $('room').open = true;   // 部屋があるあいだは折りたたまない（再読み込みしてもコードと QR が見える）
     $('room-code').textContent = room.code;
     $('room-url').textContent = roomUrl();
     $('room-url').href = roomUrl();

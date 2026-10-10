@@ -100,9 +100,9 @@
     </section>
 
     <!-- みんなで（参加者のスマホにも同じ番号。yorozu-plans ROADMAP 7.36.2 K146、企画書 83） -->
-    <section class="card" id="room" aria-labelledby="room-heading">
-      <h2 id="room-heading">みんなで（参加者のスマホにも同じ番号）</h2>
-      <p class="hint">部屋を作ると、参加者は QR か部屋コードでスマホから入れます。カードは各自のスマホの中で作り、引いた番号が同時に出て、リーチ・ビンゴもスマホが知らせます。名前は送りません。部屋が持つのは引いた番号の列とビンゴの数だけで、3 時間で消えます。</p>
+    <details class="card opt" id="room">
+      <summary>みんなで（参加者のスマホにも同じ番号）</summary>
+      <p class="hint">参加者は QR か部屋コードで入ります。カードは各自のスマホの中で作り、リーチ・ビンゴもスマホが知らせます。名前は送りません。部屋が持つのは引いた番号の列とビンゴの数だけで、3 時間で消えます。</p>
       <div id="room-off">
         <button type="button" id="room-create" class="btn">部屋を作る</button>
       </div>
@@ -117,7 +117,7 @@
         </div>
       </div>
       <p id="room-msg" class="small" aria-live="polite"></p>
-    </section>
+    </details>
 
     <div class="grid-2">
 
