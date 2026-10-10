@@ -8,7 +8,7 @@
   var API = 'https://yorozu-ai.oonuki-youhei.workers.dev/v1/room';
   var WS = API.replace(/^https/, 'wss');
   var CODE_RE = /^\d{4}[ABCDEFGHJKMNPQRSTUVWXYZ]$/;
-  var KEEP_MS = 25000;   // つながりを保つための hello の間隔（企画書 83 の 2 章: 30 人・3 時間で 1 日の無料枠の 1% 未満）
+  var KEEP_MS = 25000;   // つながりを保つ 'ping' の間隔。部屋は起きずに 'pong' を返す（企画書 83 の 2 章）
 
   function normalizeCode(s) {
     var c = String(s == null ? '' : s).replace(/[０-９Ａ-Ｚａ-ｚ]/g, function (x) { return String.fromCharCode(x.charCodeAt(0) - 0xFEE0); }).replace(/[\s-]/g, '').toUpperCase();
@@ -55,7 +55,7 @@
         wait = 1000;
         conn.send({ t: 'hello' });
         clearInterval(keep);
-        keep = setInterval(function () { conn.send({ t: 'hello' }); }, KEEP_MS);
+        keep = setInterval(function () { if (ws && ws.readyState === 1) ws.send('ping'); }, KEEP_MS);
         if (opts.onStatus) opts.onStatus('open');
         if (opts.onOpen) opts.onOpen(conn);
       };

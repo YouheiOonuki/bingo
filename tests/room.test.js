@@ -19,9 +19,10 @@ test('部屋コード: 全角・小文字・空白を直して 4 桁＋1 文字�
   assert.equal(Room.joinUrl('1234K', 'en'), 'https://yorozu-craft.com/bingo/en/join/?r=1234K');
 });
 
-test('送るもの: 司会は番号の列（set）、参加者は「ビンゴ」（bingo）、どちらも hello だけ。名前・カード・端末の情報は送らない', () => {
+test('送るもの: 司会は番号の列（set）、参加者は「ビンゴ」（bingo）、どちらもつないだ直後の hello と ping だけ。名前・カード・端末の情報は送らない', () => {
   const sent = (f) => [...strip(read(f)).matchAll(/send\(\{([^}]*)\}\)/g)].map((m) => m[1].replace(/\s+/g, ' ').trim());
-  assert.deepEqual(sent('room.js'), ["t: 'hello'", "t: 'hello'"]);
+  assert.deepEqual(sent('room.js'), ["t: 'hello'"]);
+  assert.match(strip(read('room.js')), /ws\.send\('ping'\)/, 'つながりを保つのは ping だけ');
   assert.deepEqual(sent('main.js'), ["t: 'set', numbers: g().drawn"]);
   assert.deepEqual(sent('join.js'), ["t: 'bingo'"]);
   for (const f of ['room.js', 'join.js', 'main.js']) assert.doesNotMatch(strip(read(f)), /userAgent|navigator\.language|seed\s*:\s*me|card\s*:/, f);
