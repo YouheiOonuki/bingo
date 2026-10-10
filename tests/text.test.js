@@ -24,7 +24,7 @@ test('カード番号の読み取りの失敗（calc.js の reason）すべて�
 });
 
 test('JS のファイルに、画面に出す日本語の文を直接書いていない（コメントを除く）', () => {
-  for (const f of ['main.js', 'cards.js', 'common.js', 'calc.js', 'screen.js']) {
+  for (const f of ['main.js', 'cards.js', 'common.js', 'calc.js', 'screen.js', 'room.js', 'join.js']) {
     const src = fs.readFileSync(path.join(__dirname, '..', f), 'utf8')
       .replace(/\/\*[\s\S]*?\*\//g, '')
       .replace(/(^|[^:'"])\/\/.*$/gm, '$1');

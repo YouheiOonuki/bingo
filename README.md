@@ -12,10 +12,11 @@ yorozu-craft のツールの1つです（共通ルールは [youheioonuki.github
 - ビンゴカード印刷（`cards.html`）: 1〜200 枚、A4 かレター（US Letter）に 4 枚か 2 枚（用紙の既定は日本語 A4・英語 Letter。`@page` は `cards.js` が `<style id="page-size">` で差し替える）、中央 FREE、見出し、カード番号 `No.KR-042`（頭 2 文字はカードの組の目印）、クレジット `yorozu-craft.com/bingo/print/ で作成`（既定オン・外せる）
 - 照合: カード番号を入れると、出た数でビンゴか・何個目の数でそろったか・リーチの数を出す。「この人に次の景品を渡す」。抽選画面にカードの組のビンゴ・リーチの枚数
 - 景品の順番（次の景品を抽選画面に出す・当たった人を記入）
+- みんなで（K146、yorozu-plans 企画書 83）: 司会が「部屋を作る」→ 部屋コード（4 桁＋1 文字）と QR → 参加者は `join/?r=コード` でスマホのカード（その端末で作る。`bingo_join` に seed だけ保存）に、引いた番号が同時に出る。リーチ・ビンゴは各自の端末で判定し、部屋へは「ビンゴ」の 1 回だけ送る。部屋は yorozu-ai の Durable Object（番号の列・範囲・作成時刻・ビンゴの数だけ、3 時間で消える、1 つの IP で同時 3 部屋）。部屋が無ければ 1 人用の遊び方はそのまま
 - 時間の目安: 人数と景品の数から、景品の数だけビンゴが出るまでに引く数を 300 回の試行で数え、1 回に 1〜3 個ずつの回数と時間を出す
 - 共有リンク `cards.html#s=`: カードの設定（組の番号・枚数・範囲・1 ページの枚数・見出し）だけ。出た数は入れない。受け取った側は「この設定を保存する」まで自分の設定を上書きしない
 - 保存: `bingo_game`・`bingo_cards`・`bingo_prizes`・`bingo_settings`（localStorage）。ファイルへの書き出し・読み込み（`bingo-backup-YYYYMMDD.json`、決定 D31）
-- オフライン（PWA）: `sw.js`（キャッシュ名 `bingo-v6`、英語のページも先に取得、自分のパスだけ扱う）、`manifest.webmanifest`（`id: /bingo/`）
+- オフライン（PWA）: `sw.js`（キャッシュ名 `bingo-v9`、英語のページも先に取得、自分のパスだけ扱う）、`manifest.webmanifest`（`id: /bingo/`）
 - 結果のまとめ（コピー）と、その下にだけほかのツールへの 2 行（傾斜割り勘・ルーレット。README ルール 21）
 - 広告: 抽選画面（`index.html`）はプロジェクターに全画面で映して操作するので **AdSense は meta だけ**（ルール 5 の全画面の例外。サイト横断チェックの `META_ONLY_PAGES` に `/bingo/` を足す必要がある）。カード印刷・使い方・着地ページは meta＋スクリプト。印刷には広告を出さない
 
@@ -45,6 +46,9 @@ yorozu-craft のツールの1つです（共通ルールは [youheioonuki.github
 | `cards.html` | ビンゴカードの作成と印刷・共有リンク |
 | `guide.html` | 使い方・大画面のコツ・カードの印刷と照合・早く終わらせるコツ・よくある質問（FAQPage）・しくみ・ご利用上の注意・更新履歴 |
 | `print/index.html` | 印刷したカードのクレジットから来た人の着地ページ（noindex、sitemap に載せない） |
+| `join/index.html` | みんなでの参加の画面（noindex、sitemap に載せない）。英語は `en/join/` |
+| `room.js` / `join.js` | 部屋とのつながり（司会と参加で共通） / 参加の画面の制御 |
+| `vendor/qrcode.js` | QR の部品（qrcode-generator 1.4.4、MIT、(c) Kazuhiko Arase。部屋を作ったときにだけ読む） |
 | `en/` | 英語版（抽選 `index.html`・カード `cards.html`・使い方 `guide.html`・着地ページ `print/`）。hreflang で日本語の対と結ぶ |
 | `screen.js` | 上端の固定バー・details の状態表示（yorozu-template からそのまま写した） |
 | `calc.js` | ロジック（純粋関数）: 乱数・カード・カード番号・判定・抽選・取り消し・時間の目安・正規化・共有・バックアップ |

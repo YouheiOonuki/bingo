@@ -439,3 +439,29 @@ details.card.opt[open] > summary { border-bottom: 1px solid var(--border); margi
 .content summary { cursor: pointer; color: var(--accent); font-size: 0.88rem; }
 .content details[open] summary { margin-bottom: 0.3rem; }
 .content h4 { font-size: 0.9rem; margin: 0.8rem 0 0.2rem; }
+
+/* みんなで（K146）: 司会の画面の部屋と、参加の画面（join/） */
+.room-on { display: flex; flex-wrap: wrap; gap: 1rem; align-items: center; }
+.room-qr { width: 11rem; max-width: 45vw; background: #fff; border-radius: 6px; line-height: 0; }
+.room-qr svg { width: 100%; height: auto; }
+.room-code { font-size: 1.8rem; letter-spacing: 0.08em; font-variant-numeric: tabular-nums; }
+.room-live { font-variant-numeric: tabular-nums; }
+.room-badge { margin-top: 0.4rem; font-weight: 600; color: var(--accent); word-break: break-all; }
+.stage.is-full .room-badge { font-size: clamp(1rem, 2.6vh, 2rem); }
+.join-main { max-width: 32rem; }
+.join-last-line { display: flex; align-items: baseline; gap: 0.6rem; flex-wrap: wrap; }
+.join-last { font-size: 2.6rem; color: var(--accent); font-variant-numeric: tabular-nums; }
+.join-status { font-weight: 700; min-height: 1.5em; margin: 0.3rem 0 0.6rem; }
+.join-status.is-reach { color: var(--accent); }
+.join-status.is-bingo { color: #fff; background: var(--ok); padding: 0.4rem 0.6rem; border-radius: 6px; }
+.join-card { width: 100%; border-collapse: collapse; table-layout: fixed; font-variant-numeric: tabular-nums; }
+.join-card th { padding: 0.3rem 0; color: #fff; font-weight: 800; }
+.join-card th:nth-child(1) { background: var(--col-B); }
+.join-card th:nth-child(2) { background: var(--col-I); }
+.join-card th:nth-child(3) { background: var(--col-N); }
+.join-card th:nth-child(4) { background: var(--col-G); }
+.join-card th:nth-child(5) { background: var(--col-O); }
+.join-card td { border: 1px solid var(--input-border); text-align: center; font-size: 1.4rem; font-weight: 700; padding: 0.55rem 0; }
+.join-card td.hit { background: var(--accent-soft); color: var(--accent); }
+.join-card td.line { background: var(--accent); color: #fff; }
+.join-drawn { word-break: break-word; }

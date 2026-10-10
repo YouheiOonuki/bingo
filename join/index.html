@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ビンゴに参加する（みんなで）｜yorozu-craft</title>
+  <meta name="description" content="司会の部屋コードで、スマホからビンゴに参加します。カードはこのスマホの中で作り、引いた番号が同時に出ます。">
+  <!-- 部屋ごとの入口なので検索には出さない（sitemap にも入れない。yorozu-plans 企画書 83） -->
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#8b4513" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1c1814" media="(prefers-color-scheme: dark)">
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="../apple-touch-icon.png">
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+
+  <header class="app-header">
+    <h1>ビンゴに参加する</h1>
+    <p class="subtitle">司会の画面の部屋コードで入ります。名前は送りません。</p>
+    <p class="lang-switch"><a href="../en/join/" hreflang="en" lang="en">English</a></p>
+  </header>
+
+  <main class="app-main join-main">
+
+    <form id="join-form" class="card inline-form">
+      <label for="code">部屋コード</label>
+      <input type="text" id="code" autocomplete="off" autocapitalize="characters" maxlength="8" placeholder="例：1234K">
+      <button type="submit" class="btn">参加する</button>
+      <p id="join-msg" class="small" aria-live="polite"></p>
+    </form>
+
+    <section id="play" class="card" hidden aria-labelledby="joined">
+      <h2 id="joined"></h2>
+      <p class="join-last-line"><span class="small">最後の数</span> <strong id="last" class="join-last">–</strong> <span id="count" class="small"></span></p>
+      <p id="status" class="join-status" aria-live="polite"></p>
+      <table id="card" class="join-card" aria-label="あなたのカード"></table>
+      <p class="small">出た数は自動で印が付きます。カードはこのスマホの中だけにあり、閉じて開き直しても同じカードです。</p>
+      <p id="drawn" class="join-drawn small"></p>
+      <p id="conn" class="small" aria-live="polite"></p>
+    </section>
+
+    <p><button type="button" class="btn btn-ghost" data-reset-storage="bingo_">保存した内容をすべて消す（初期状態に戻す）</button></p>
+
+    <p class="small"><a href="../">ビンゴ抽選（司会の画面）</a>・<a href="../../privacy-policy.html">プライバシーポリシー</a></p>
+  </main>
+
+  <script src="../text.js"></script>
+  <script src="../calc.js"></script>
+  <script src="../reset-storage.js"></script>
+  <script src="../room.js"></script>
+  <script src="../join.js"></script>
+</body>
+</html>

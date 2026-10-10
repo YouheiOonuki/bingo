@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Join a bingo game (play together) | yorozu-craft</title>
+  <meta name="description" content="Join the caller's bingo room from your phone with the room code. Your card is made on this phone and called numbers appear as they are drawn.">
+  <!-- An entrance for each room, so it stays out of search (and out of the sitemap). yorozu-plans plan 83 -->
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#8b4513" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#1c1814" media="(prefers-color-scheme: dark)">
+  <link rel="icon" href="../../favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="../../apple-touch-icon.png">
+  <link rel="stylesheet" href="../../style.css">
+</head>
+<body>
+
+  <header class="app-header">
+    <h1>Join a bingo game</h1>
+    <p class="subtitle">Enter the room code shown on the caller's screen. No names are sent.</p>
+    <p class="lang-switch"><a href="../../join/" hreflang="ja" lang="ja">日本語</a></p>
+  </header>
+
+  <main class="app-main join-main">
+
+    <form id="join-form" class="card inline-form">
+      <label for="code">Room code</label>
+      <input type="text" id="code" autocomplete="off" autocapitalize="characters" maxlength="8" placeholder="e.g. 1234K">
+      <button type="submit" class="btn">Join</button>
+      <p id="join-msg" class="small" aria-live="polite"></p>
+    </form>
+
+    <section id="play" class="card" hidden aria-labelledby="joined">
+      <h2 id="joined"></h2>
+      <p class="join-last-line"><span class="small">Last number</span> <strong id="last" class="join-last">–</strong> <span id="count" class="small"></span></p>
+      <p id="status" class="join-status" aria-live="polite"></p>
+      <table id="card" class="join-card" aria-label="Your card"></table>
+      <p class="small">Called numbers are marked automatically. Your card exists only on this phone and stays the same if you close and reopen the page.</p>
+      <p id="drawn" class="join-drawn small"></p>
+      <p id="conn" class="small" aria-live="polite"></p>
+    </section>
+
+    <p><button type="button" class="btn btn-ghost" data-reset-storage="bingo_">Delete everything saved (reset)</button></p>
+
+    <p class="small"><a href="../">Bingo caller</a> · <a href="../../../en/privacy-policy.html">Privacy policy</a></p>
+  </main>
+
+  <script src="../../text.js"></script>
+  <script src="../../calc.js"></script>
+  <script src="../../reset-storage.js"></script>
+  <script src="../../room.js"></script>
+  <script src="../../join.js"></script>
+</body>
+</html>

@@ -295,6 +295,7 @@
     chime();
     speakNumbers(picked);
     $('announce').textContent = T.announce(picked.map(label));
+    pushNumbers();
   }
 
   function undo() {
@@ -307,6 +308,7 @@
     showBall(d.length ? d[d.length - 1] : null);
     renderBatch(null);
     renderStage(0);
+    pushNumbers();
   }
 
   // ---------------------------------------------------------------
@@ -426,6 +428,7 @@
     showBall(null);
     renderBatch(null);
     renderAll();
+    pushNumbers();
   });
 
   // ---------------------------------------------------------------
@@ -642,6 +645,7 @@
     showBall(d.length ? d[d.length - 1] : null);
     renderBatch(null);
     renderAll();
+    pushNumbers();
   });
 
   // ほかのタブ（カード印刷のページ）でカードを変えたら読み直す
@@ -653,8 +657,96 @@
     }
   });
 
+  // ---------------------------------------------------------------
+  // みんなで（K146）: 部屋を作り、引いた番号の列を参加者のスマホへ送る（room.js）。送るのは番号の列だけ
+  // 演出の途中では送らない（会場の画面より先にスマホに出ないように。reveal・取り消し・はじめから・読み込みの後に送る）
+  // ---------------------------------------------------------------
+  var R = window.Room, conn = null;
+  var room = K.store.get('room', null);   // { code, key, max, expiresAt }（この端末の中だけ）
+  function roomUrl() { return R.joinUrl(room.code, document.documentElement.lang === 'en' ? 'en' : 'ja'); }
+  function roomMatches() { return room && g().min === 1 && g().max === room.max; }
+  function pushNumbers() {
+    if (!conn || anim) return;
+    if (!roomMatches()) { $('room-msg').textContent = T.room.rangeChanged; return; }
+    conn.send({ t: 'set', numbers: g().drawn });
+  }
+  function drawQr(url) {
+    var box = $('room-qr');
+    box.textContent = '';
+    if (!window.qrcode) return;
+    var q = window.qrcode(0, 'M');
+    q.addData(url);
+    q.make();
+    box.innerHTML = q.createSvgTag({ cellSize: 6, margin: 2, scalable: true });
+  }
+  function loadQr(cb) {
+    if (window.qrcode) { cb(); return; }
+    var s = document.createElement('script');
+    s.src = (document.documentElement.lang === 'en' ? '../' : './') + 'vendor/qrcode.js';
+    s.onload = cb;
+    document.head.appendChild(s);
+  }
+  function renderRoom(st) {
+    var on = !!room;
+    $('room-off').hidden = on;
+    $('room-on').hidden = !on;
+    $('room-badge').hidden = !on;
+    if (!on) return;
+    $('room-code').textContent = room.code;
+    $('room-url').textContent = roomUrl();
+    $('room-url').href = roomUrl();
+    $('room-badge').textContent = T.room.badge(room.code, roomUrl().replace(/^https:\/\//, ''));
+    if (st && st.t === 'state') $('room-live').textContent = T.room.live(st.players, st.bingo, new Date(st.expiresAt));
+  }
+  function endRoom(msg) {
+    if (conn) conn.stop();
+    conn = null;
+    room = null;
+    K.store.set('room', null);
+    $('room-qr').textContent = '';
+    $('room-live').textContent = '';
+    $('room-msg').textContent = msg || '';
+    renderRoom();
+  }
+  function openRoom() {
+    renderRoom();
+    loadQr(function () { drawQr(roomUrl()); });
+    conn = R.connect({
+      code: room.code, key: room.key,
+      onOpen: function () { $('room-msg').textContent = ''; pushNumbers(); },
+      onState: renderRoom,
+      onStatus: function (s) { if (s === 'retry') $('room-msg').textContent = T.room.retry; },
+      onGone: function () { endRoom(T.room.gone); },
+    });
+  }
+  $('room-create').addEventListener('click', function () {
+    if (g().min !== 1 || C.CARD_MAXES.indexOf(g().max) < 0) { $('room-msg').textContent = T.room.notCard; return; }
+    var b = this;
+    b.disabled = true;
+    $('room-msg').textContent = T.room.creating;
+    R.create(g().max).then(function (j) {
+      b.disabled = false;
+      if (!j.ok) { $('room-msg').textContent = j.error === 'tooMany' ? T.room.tooMany : T.room.failed; return; }
+      room = { code: j.code, key: j.key, max: g().max, expiresAt: j.expiresAt };
+      K.store.set('room', room);
+      $('room-msg').textContent = '';
+      openRoom();
+    });
+  });
+  $('room-close').addEventListener('click', function () {
+    if (!room || !window.confirm(T.room.closeConfirm)) return;
+    var r = room;
+    endRoom('');
+    R.close(r.code, r.key);
+  });
+  $('room-copy').addEventListener('click', function () {
+    K.copyText(roomUrl()).then(function () { $('room-msg').textContent = T.room.copied; }, function () { $('room-msg').textContent = T.copyFailed; });
+  });
+
   var d0 = g().drawn;
   showBall(d0.length ? d0[d0.length - 1] : null);
   renderAll();
+  if (room && room.expiresAt > Date.now()) openRoom();
+  else if (room) endRoom('');
   K.registerSW();
 })();
