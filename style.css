@@ -125,7 +125,6 @@ a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset:
   border-bottom: 2px solid var(--border);
 }
 .app-header h1 { font-size: 1.45rem; color: var(--accent); line-height: 1.4; }
-.app-header .subtitle { font-size: 0.88rem; color: var(--muted); margin-top: 0.3rem; }
 
 /* レイアウト */
 .app-main { max-width: 680px; margin: 0 auto; padding: 1rem; }
@@ -274,13 +273,23 @@ body.is-max .mode-switch { display: none; }
   background: #fff; color: #222; border-radius: 50%; width: 62%; aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
 }
 .ball-num { font-size: clamp(3.4rem, 20vw, 6.2rem); }
+.ball { position: relative; }
 .ball.spinning .ball-num { color: #777; }
-.ball.pop { animation: pop 0.45s ease-out; }
-@keyframes pop { 0% { transform: scale(0.7); } 60% { transform: scale(1.08); } 100% { transform: scale(1); } }
-@media (prefers-reduced-motion: reduce) { .ball.pop { animation: none; } }
+/* 発表の演出（SCREEN 1.4 の 3）: 引いている間は玉が揺れ、出た瞬間に弾んで光の輪が 1 回広がる。点滅はしない */
+.ball.spinning { animation: rattle 0.24s ease-in-out infinite; }
+@keyframes rattle { 0%, 100% { transform: rotate(0) translateY(0); } 25% { transform: rotate(-7deg) translateY(-3px); } 75% { transform: rotate(7deg) translateY(2px); } }
+.ball.pop { animation: pop 0.5s cubic-bezier(0.2, 1.6, 0.4, 1); }
+@keyframes pop { 0% { transform: scale(0.6); } 60% { transform: scale(1.12); } 100% { transform: scale(1); } }
+.ball.pop::after {
+  content: ""; position: absolute; inset: 0; border-radius: 50%; pointer-events: none;
+  border: 0.35rem solid var(--ball); animation: ring 0.7s ease-out forwards;
+}
+@keyframes ring { 0% { transform: scale(1); opacity: 0.85; } 100% { transform: scale(1.35); opacity: 0; } }
+.cell.last { animation: lit 0.6s ease-out; }
+@keyframes lit { 0% { transform: scale(1.6); } 100% { transform: scale(1); } }
+@media (prefers-reduced-motion: reduce) { .ball.spinning, .ball.pop, .ball.pop::after, .cell.last { animation: none; } .ball.pop::after { display: none; } }
 .batch { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.4rem; font-variant-numeric: tabular-nums; }
 .btn-draw { font-size: 1.35rem; padding: 0.8rem 2.2rem; border-radius: 999px; min-width: 12rem; margin: 0; }
-.draw-hint { font-size: 0.78rem; color: var(--muted); margin-top: 0.3rem; }
 .sub-row { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 0.4rem 1rem; margin-top: 0.6rem; }
 .next-prize { font-weight: 600; font-size: 0.95rem; }
 .set-status { margin-top: 0.5rem; font-weight: 600; color: var(--accent); }
@@ -326,7 +335,6 @@ body.is-max .stage.is-full { position: fixed; inset: 0; z-index: 100; }
 .stage.is-full .ball-letter { font-size: min(7vh, 5vw); min-height: min(7vh, 5vw); }
 .stage.is-full .ball-num { font-size: min(22vh, 16vw); }
 .stage.is-full .batch { font-size: min(6vh, 4vw); }
-.stage.is-full .draw-hint { display: none; }
 .stage.is-full .next-prize, .stage.is-full .set-status { font-size: min(3.4vh, 2.4vw); }
 .stage.is-full .recent { font-size: min(3vh, 2vw); }
 .stage.is-full .history-title { font-size: min(3vh, 2vw); }
