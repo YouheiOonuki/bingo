@@ -56,3 +56,13 @@ test('1 人用の遊び方はそのまま: 部屋が無いときは「みんな�
   for (const f of ['index.html', 'en/index.html']) assert.ok(!read(f).includes('qrcode.js'), f);
   assert.match(read('vendor/qrcode.js'), /Licensed under the MIT license/);
 });
+
+// K182 の入口（yorozu-plans ROADMAP 7.74 D347）: 部屋を作ったあとに出る枠に、別館の発表の画面へのリンクだけの 1 行。コードは URL に入れない。英語版には置かない
+test('みんなでの枠: 部屋を作ったあとに別館の発表の画面へのリンク（日本語だけ・コードなし）', () => {
+  const fs = require('node:fs'), path = require('node:path');
+  const ja = fs.readFileSync(path.join(__dirname, '..', 'index.html'), 'utf8');
+  const on = /<div id="room-on"[\s\S]*?<p id="room-msg"/.exec(ja)[0];
+  assert.match(on, /<p class="small"><a href="\/hade\/bingo\/">大きな画面で発表する（別館）<\/a><\/p>/);
+  assert.ok(!/hade\/bingo\/\?|hade\/bingo\/#/.test(ja), 'コードを URL に入れない');
+  assert.ok(!fs.readFileSync(path.join(__dirname, '..', 'en', 'index.html'), 'utf8').includes('/hade/'), '英語版には置かない');
+});
