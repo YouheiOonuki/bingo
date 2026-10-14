@@ -67,9 +67,8 @@
         <legend class="visually-hidden">枚数・数の範囲・1 ページの枚数</legend>
         <div class="est-inputs">
           <div class="field">
-            <label for="c-count">枚数</label>
+            <label for="c-count">枚数（1〜200 枚。予備を数枚多めに）</label>
             <input type="number" id="c-count" inputmode="numeric" min="1" max="200" value="40">
-            <p class="hint">1〜200 枚。予備を数枚多めに。</p>
           </div>
           <div class="field">
             <label for="c-max">数の範囲</label>
@@ -93,7 +92,9 @@
       <div class="btn-row">
         <button type="button" id="btn-print" class="btn">印刷する</button>
       </div>
-      <p class="hint">用紙は縦・倍率 100%（「用紙に合わせる」も可）。<a href="../print-help.html">スマホで印刷するには →</a></p>
+      <!-- data-keep: 印刷の設定（紙の向き・倍率）。違うと刷り上がりが合わない -->
+      <p class="hint" data-keep>用紙は縦・倍率 100%（「用紙に合わせる」も可）。</p>
+      <p class="hint"><a href="../print-help.html">スマホで印刷するには</a></p>
     </section>
 
     <div id="sheets" class="sheets" aria-label="印刷の見本"></div>
@@ -169,7 +170,7 @@
     <p class="small"><a href="./">抽選画面へ（カード番号で当たりを照合）</a></p>
     <p class="small"><a href="./guide.html#cards">カードの印刷と照合の使い方・よくある質問</a></p>
 
-    <p class="small">脳トレ・ビンゴカード・季節の紙・冷蔵庫に貼る紙を 1 か月分まとめた PDF は<a href="/print/">脳トレ・レクの 1 か月セット</a>（無料・答えつき）。</p>
+    <p class="small"><a href="/print/">脳トレ・ビンゴカード・季節の紙を 1 か月分まとめた PDF（無料・答えつき）</a></p>
   </main>
 
   <footer class="app-footer">
