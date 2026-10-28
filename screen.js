@@ -13,7 +13,7 @@
 // ===========================
 (function () {
   'use strict';
-  var BAR_H = 44;   // style.css の .fixbar の高さと同じ
+  var BAR_H = 45;   // style.css の .fixbar の高さ（44px＋下の線 1px）と同じ
   function $(x) { return typeof x === 'string' ? document.getElementById(x) : x; }
   function setText(e, t) { if (e && e.textContent !== t) e.textContent = t; }
 
