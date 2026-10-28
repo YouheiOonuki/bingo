@@ -230,9 +230,6 @@ html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
 .faq dt { font-weight: 600; margin-top: 0.9rem; font-size: 0.92rem; }
 .faq dt::before { content: 'Q. '; color: var(--accent); }
 .faq dd { font-size: 0.88rem; color: var(--muted); padding: 0.2rem 0 0.5rem 1.2rem; border-bottom: 1px solid var(--border); }
-.info-list { display: grid; grid-template-columns: max-content 1fr; gap: 0.4rem 1.2rem; font-size: 0.9rem; }
-.info-list dt { font-weight: 600; }
-.info-list dd { color: var(--muted); }
 
 /* ===========================
    ビンゴ（抽選ページ・カードページ）
