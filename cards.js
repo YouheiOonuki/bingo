@@ -104,6 +104,7 @@
     more.textContent = box.classList.contains('show-all') ? T.previewOne : T.previewAll(pages);
     bar.set(T.fixbarInfo(cards.length, pages));
     fitZoom();
+    window.yzUsed?.();
   }
 
   // 印刷の用紙（@page）。CSS の @page はクラスで切り替えられないので、<style> を差し替える
